@@ -380,6 +380,10 @@ Please consult [`deploymentfix.md`](file:///c:/Users/franc/OneDrive/Documents/Pr
    - `VITE_API_URL`: Your backend API URL (e.g., `https://nexora-api.onrender.com`)
    - `VITE_WS_URL`: Your WebSocket URL (e.g., `wss://nexora-api.onrender.com/ws`)
 4. Click **Deploy**.
+5. See [deploymentfix.md](file:///c:/Users/franc/OneDrive/Documents/Projects/nexora/deploymentfix.md) for full frontend Vercel guidance.
+
+### Backend Deployment (Render, Railway, Docker)
+For step-by-step resolution of Render & Railway backend deployment configurations, see [deploymentfixserver.md](file:///c:/Users/franc/OneDrive/Documents/Projects/nexora/deploymentfixserver.md).
 
 ### Docker Deployment (Full Stack)
 ```bash

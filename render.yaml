@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: nexora-api
+    env: node
+    plan: free
+    buildCommand: npm install && npm run build:server
+    startCommand: npm run start
+    healthCheckPath: /api/stats
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 4000
+      - key: CORS_ORIGIN
+        value: '*'
+      - key: JWT_SECRET
+        generateValue: true
