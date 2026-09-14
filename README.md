@@ -1,15 +1,8 @@
-# NEXORA — Multi-Tenant IoT Device Fleet Security & Behavioral Observability Platform
-
 <div align="center">
 
-```
-  _   _  _______  ______  _____            
- | \ | ||  ____/ \ \    / / __ \  _____    /\   
- |  \| || |__     \ \  / / |  | ||  __ \  /  \  
- | . ` ||  __|     \ \/ /| |  | || |__) |/ /\ \ 
- | |\  || |____     \  / | |__| ||  _  // ____ \
- |_| \_||______|     \/   \____/ |_| \_/_/    \_\
-```
+<img src="./nexora.png" alt="NEXORA Logo" width="160" style="border-radius: 16px; margin-bottom: 12px;" />
+
+# NEXORA — Multi-Tenant IoT Fleet Security & Observability
 
 **Next-Generation Certificate-Based IoT Identity, Real-Time Telemetry Ingestion, and Explainable Behavioral ML Anomaly Defense**
 

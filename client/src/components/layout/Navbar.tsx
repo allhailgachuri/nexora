@@ -23,8 +23,8 @@ export const Navbar: React.FC<NavbarProps> = ({ stats, wsConnected, onOpenSimula
     <header className="sticky top-0 z-40 h-16 border-b border-slate-800 bg-[#0a0d14]/90 backdrop-blur-xl px-4 sm:px-6 flex items-center justify-between">
       {/* Brand & Platform Identity */}
       <div className="flex items-center gap-3">
-        <div className="relative flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 shadow-cyber-glow">
-          <Shield className="w-5 h-5 text-white" />
+        <div className="relative flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-slate-900 to-slate-950 border border-cyan-500/30 shadow-cyber-glow overflow-hidden p-1">
+          <img src="/nexora.png" alt="NEXORA Logo" className="w-full h-full object-contain" />
           <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-emerald-400 border-2 border-[#0a0d14]" />
         </div>
         <div>
