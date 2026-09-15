@@ -6,12 +6,12 @@
 
 **Next-Generation Certificate-Based IoT Identity, Real-Time Telemetry Ingestion, and Explainable Behavioral ML Anomaly Defense**
 
-[![Status](https://img.shields.io/badge/Status-Production--Ready-emerald?style=for-the-badge&logo=shield)](https://github.com/)
+[![Frontend on Vercel](https://img.shields.io/badge/Frontend-nexorraa.vercel.app-000000?style=for-the-badge&logo=vercel)](https://nexorraa.vercel.app/)
+[![Backend on Render](https://img.shields.io/badge/Backend%20API-nexorraa.onrender.com-46E3B7?style=for-the-badge&logo=render)](https://nexorraa.onrender.com/)
 [![PKI Security](https://img.shields.io/badge/PKI-X.509%20mTLS%20%7C%202048--bit%20RSA-cyan?style=for-the-badge&logo=lock)](https://github.com/)
 [![Broker ACL](https://img.shields.io/badge/Broker-Strict%20Topic%20ACL-blue?style=for-the-badge&logo=mqtt)](https://github.com/)
 [![ML Engine](https://img.shields.io/badge/ML%20Engine-Isolation%20Forest%20%2B%20SHAP-purple?style=for-the-badge&logo=scikitlearn)](https://github.com/)
 [![Audit Ledger](https://img.shields.io/badge/Audit-SHA--256%20Hash%20Chain-amber?style=for-the-badge&logo=blockchain)](https://github.com/)
-[![Vercel Ready](https://img.shields.io/badge/Deploy-Vercel%20%2B%20Docker-black?style=for-the-badge&logo=vercel)](https://vercel.com/)
 
 </div>
 
@@ -366,26 +366,64 @@ Open [http://localhost:4000](http://localhost:4000) in your browser.
 
 ---
 
-## 🌐 Production & Vercel Deployment Guide
+## 🌐 Production Deployments & Cloud Architecture
 
-Please consult [`deploymentfix.md`](file:///c:/Users/franc/OneDrive/Documents/Projects/nexora/deploymentfix.md) for full deployment details.
+NEXORA operates as a **decoupled cloud architecture**:
 
-### Vercel Deployment (Frontend)
+```
+ ┌──────────────────────────────────────────────┐
+ │  VERCEL EDGE NETWORK (Static SPA Frontend)   │
+ │  https://nexorraa.vercel.app/                │
+ └──────────────────────┬───────────────────────┘
+                        │ HTTPS (REST API) & WSS (Live Stream)
+                        ▼
+ ┌──────────────────────────────────────────────┐
+ │  RENDER WEB SERVICE (Node.js/TS Engine)      │
+ │  https://nexorraa.onrender.com/              │
+ │  • X.509 PKI Root Authority & CRL Engine     │
+ │  • MQTT Broker & Strict Topic ACL Enforcement│
+ │  • Tier 1 Rules + Tier 2 ML Anomaly Engine   │
+ │  • Live Sub-Second WebSocket Observability   │
+ └──────────────────────────────────────────────┘
+```
+
+### 🚀 Live URLs
+* **Frontend Command Center**: [https://nexorraa.vercel.app/](https://nexorraa.vercel.app/)
+* **Backend Engine & API**: [https://nexorraa.onrender.com/](https://nexorraa.onrender.com/)
+
+---
+
+### 1. Vercel Deployment (Frontend)
+The React SPA is deployed directly to **Vercel** for instant global edge delivery.
 1. Import the repository into **Vercel**.
-2. Settings:
+2. Project Configuration:
    - **Framework Preset**: `Vite`
    - **Build Command**: `npm run build:client`
    - **Output Directory**: `client/dist`
-3. Optional Environment Variables:
-   - `VITE_API_URL`: Your backend API URL (e.g., `https://nexora-api.onrender.com`)
-   - `VITE_WS_URL`: Your WebSocket URL (e.g., `wss://nexora-api.onrender.com/ws`)
-4. Click **Deploy**.
-5. See [deploymentfix.md](file:///c:/Users/franc/OneDrive/Documents/Projects/nexora/deploymentfix.md) for full frontend Vercel guidance.
+   - **Install Command**: `npm install`
+3. Zero-Config Connection: The client automatically detects the `*.vercel.app` domain and connects to `https://nexorraa.onrender.com` without requiring manual environment variables. (Optional overrides: `VITE_API_URL` and `VITE_WS_URL`).
+4. Full runbook available in [`deploymentfix.md`](file:///c:/Users/franc/OneDrive/Documents/Projects/nexora/deploymentfix.md).
 
-### Backend Deployment (Render, Railway, Docker)
-For step-by-step resolution of Render & Railway backend deployment configurations, see [deploymentfixserver.md](file:///c:/Users/franc/OneDrive/Documents/Projects/nexora/deploymentfixserver.md).
+---
 
-### Docker Deployment (Full Stack)
+### 2. Render Deployment (Backend Service)
+The stateful backend runs on **Render** as a persistent Node.js web service.
+1. Connect your GitHub repository in **Render**.
+2. Web Service Configuration:
+   - **Root Directory**: `server` (or leave blank `./`)
+   - **Build Command**: `npm install && npm run build:server`
+   - **Start Command**: `npm start` *(or `node dist/index.js`)*
+   - **Health Check Path**: `/api/stats`
+3. Environment Variables:
+   - `NODE_ENV`: `production`
+   - `PORT`: `4000`
+   - `CORS_ORIGIN`: `*`
+   - `JWT_SECRET`: `nexora_production_secure_jwt_key_99`
+4. Complete diagnosis and multi-cloud runbook available in [`deploymentfixserver.md`](file:///c:/Users/franc/OneDrive/Documents/Projects/nexora/deploymentfixserver.md).
+
+---
+
+### 3. Docker Deployment (All-in-One Container)
 ```bash
 docker build -t nexora-platform .
 docker run -p 4000:4000 nexora-platform

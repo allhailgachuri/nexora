@@ -14,8 +14,19 @@ import {
   ActionType
 } from '../types';
 
-const BACKEND_URL = (import.meta as any).env?.VITE_API_URL || '';
-const API_BASE = BACKEND_URL ? `${BACKEND_URL.replace(/\/$/, '')}/api` : '/api';
+const getInitialBackendUrl = (): string => {
+  const envUrl = (import.meta as any).env?.VITE_API_URL;
+  if (envUrl) return envUrl.replace(/\/$/, '');
+  if (typeof window !== 'undefined' && window.location.hostname.includes('vercel.app')) {
+    return 'https://nexorraa.onrender.com';
+  }
+  return '';
+};
+
+const rawBackend = getInitialBackendUrl();
+const API_BASE = rawBackend
+  ? (rawBackend.endsWith('/api') ? rawBackend : `${rawBackend}/api`)
+  : '/api';
 
 export class ApiService {
   public static async getFleetStats(): Promise<FleetStats> {
@@ -323,7 +334,11 @@ class WebSocketClient {
   public connect(): void {
     const wsEnvUrl = (import.meta as any).env?.VITE_WS_URL;
     let url = wsEnvUrl;
-    if (!url) {
+    if (!url && rawBackend) {
+      const cleanHost = rawBackend.replace(/^https?:\/\//, '').replace(/\/api$/, '').replace(/\/$/, '');
+      const wsProto = rawBackend.startsWith('https') ? 'wss:' : 'ws:';
+      url = `${wsProto}//${cleanHost}/ws`;
+    } else if (!url) {
       const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
       const host = window.location.host;
       url = `${protocol}//${host}/ws`;

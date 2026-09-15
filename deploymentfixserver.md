@@ -1,12 +1,38 @@
-# NEXORA — Server Deployment Fix & Production Guide (`deploymentfixserver.md`)
+# NEXORA — Server Deployment & Full Stack Production Runbook (`deploymentfixserver.md`)
 
-This guide diagnoses and eliminates **all deployment errors** on **Render**, **Railway**, **Fly.io**, **AWS**, and **Docker** when deploying the **NEXORA Backend Core** (Express API + WebSocket Observability Bus + X.509 PKI Authority + Simulated Telemetry Engine).
+This comprehensive guide documents all production fixes, multi-cloud configurations, and operational playbooks implemented for the **NEXORA Backend Core** (Express API + WebSocket Observability Bus + X.509 PKI Authority + Simulated Telemetry Ingestion Engine) and its integration with the **Vercel Frontend**.
+
+---
+
+## 🌐 Live Production Deployments
+
+* **Frontend Command Center (Vercel)**: [https://nexorraa.vercel.app/](https://nexorraa.vercel.app/)
+* **Backend API & WebSocket Event Bus (Render)**: [https://nexorraa.onrender.com/](https://nexorraa.onrender.com/)
+
+---
+
+## 🧠 Architectural Deep-Dive: Why Decouple Vercel & Render?
+
+### The Question:
+> *"Why did Render show all backend features while Vercel initially needed configuration to display the fleet data?"*
+
+### The Architectural Explanation:
+1. **Render (Full-Stack & Backend Service)**:
+   - Render runs the persistent Node.js/TypeScript server process.
+   - It hosts the embedded **X.509 PKI Root Authority**, the **MQTT Broker topic ACL engine**, the **Two-Tier ML Anomaly detector**, and the live **WebSocket streaming bus**.
+   - When visited directly (`https://nexorraa.onrender.com/`), Express serves the API endpoints (`/api/...`), WebSockets (`/ws`), and static files from `client/dist`.
+
+2. **Vercel (Static Edge Single-Page Application)**:
+   - Vercel is a global CDN/Edge network optimized for blazing-fast React frontend rendering.
+   - Vercel does **not** run persistent WebSocket servers or PKI cryptographic engines.
+   - For Vercel (`https://nexorraa.vercel.app/`) to display the live fleet, it fetches JSON from Render (`https://nexorraa.onrender.com/api/...`) and maintains a persistent WebSocket connection to `wss://nexorraa.onrender.com/ws`.
+   - **The Zero-Config Auto-Connect Fix**: We enhanced [`client/src/services/api.ts`](file:///c:/Users/franc/OneDrive/Documents/Projects/nexora/client/src/services/api.ts) so that whenever the application runs on a `*.vercel.app` domain, it automatically resolves to `https://nexorraa.onrender.com` without needing manual environment variables!
 
 ---
 
 ## 🚨 Root Cause Diagnosis: The `/server/server/dist/index.js` Error
 
-### The Exact Log Output:
+### The Exact Render Error:
 ```text
 ==> Running 'node server/dist/index.js'
 Error: Cannot find module '/opt/render/project/src/server/server/dist/index.js'
@@ -14,194 +40,97 @@ Error: Cannot find module '/opt/render/project/src/server/server/dist/index.js'
 ==> Exited with status 1
 ```
 
-### Why this happens:
-On Render or Railway, when you set the **Root Directory** field in the Web Service settings to `server`, the cloud host changes its current working directory to `/opt/render/project/src/server`.
+### Why this occurred:
+When the **Root Directory** in Render's dashboard is set to `server`, Render's runner changes working directory to `/opt/render/project/src/server`.
 
-If your **Start Command** is configured as `node server/dist/index.js`, Node resolves the path relative to `/server/`, resulting in:
+If the **Start Command** is left as `node server/dist/index.js`, Node resolves the relative path from inside `/server/`, attempting to find:
 $$\text{/opt/render/project/src/server} + \text{server/dist/index.js} = \textbf{/opt/render/project/src/server/server/dist/index.js} \quad (\text{FAIL})$$
 
 ---
 
-## 🛠️ The 3 Instant Solutions
+## 🛠️ Complete Summary of All Applied Fixes
 
-Choose **Solution 1 (Recommended)** or **Solution 2** depending on your Render dashboard configuration:
+We engineered a **resilient, self-healing system** that boots cleanly under **ANY** directory or script configuration:
 
-### 🌟 Solution 1: Deploy from Project Root (Recommended)
-
-In your **Render Web Service Settings**:
-1. **Root Directory**: Leave **BLANK** (or enter `./`).
-2. **Environment**: `Node`
-3. **Build Command**:
-   ```bash
-   npm install && npm run build:server
-   ```
-4. **Start Command**:
-   ```bash
-   npm run start
-   ```
-   *(or `node server/dist/index.js`)*
-5. **Health Check Path**: `/api/stats`
-
----
-
-### 🌟 Solution 2: Deploy with Root Directory set to `server`
-
-If you specifically configured your Render service with **Root Directory** = `server`:
-1. **Root Directory**: `server`
-2. **Environment**: `Node`
-3. **Build Command**:
-   ```bash
-   npm install && npm run build
-   ```
-4. **Start Command**:
-   ```bash
-   npm start
-   ```
-   *(or `node dist/index.js` or `node index.js`)*
-5. **Health Check Path**: `/api/stats`
-
----
-
-### 🌟 Solution 3: One-Click Render Blueprint (`render.yaml`)
-
-We have pre-configured a declarative `render.yaml` at the root of the repository.
-
-1. Go to your **Render Dashboard** → **Blueprints** → **New Blueprint Instance**.
-2. Connect your `nexora` repository.
-3. Render will automatically read `render.yaml` and provision `nexora-api` with the exact correct build scripts, port bindings, and health checks without manual typing.
-
-```yaml
-# render.yaml
-services:
-  - type: web
-    name: nexora-api
-    env: node
-    plan: free
-    buildCommand: npm install && npm run build:server
-    startCommand: npm run start
-    healthCheckPath: /api/stats
-    envVars:
-      - key: NODE_ENV
-        value: production
-      - key: PORT
-        value: 4000
-      - key: CORS_ORIGIN
-        value: '*'
-      - key: JWT_SECRET
-        generateValue: true
-```
-
----
-
-## 🚂 Railway Deployment Instructions
-
-1. Go to **Railway.app** → **New Project** → **Deploy from GitHub repo**.
-2. Under **Service Settings**:
-   - **Root Directory**: `/`
-   - **Build Command**: `npm install && npm run build:server`
-   - **Start Command**: `npm run start`
-3. Under **Variables**:
-   ```env
-   NODE_ENV=production
-   PORT=4000
-   CORS_ORIGIN=*
-   JWT_SECRET=your-secure-random-jwt-key
-   ```
-4. Railway will expose a public `https://...up.railway.app` URL.
-
----
-
-## 🐳 Docker Container Deployment (All Environments)
-
-To run the containerized backend anywhere (Render Docker runtime, Fly.io, AWS ECS, GCP Cloud Run):
-
-### Standard `Dockerfile`:
-```dockerfile
-FROM node:22-alpine AS builder
-WORKDIR /app
-COPY package*.json ./
-RUN npm install
-COPY . .
-RUN npm run build:server
-
-FROM node:22-alpine AS runner
-WORKDIR /app
-ENV NODE_ENV=production
-ENV PORT=4000
-COPY --from=builder /app/package*.json ./
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/server/dist ./server/dist
-COPY --from=builder /app/server ./server
-COPY --from=builder /app/index.js ./index.js
-
-EXPOSE 4000
-CMD ["npm", "run", "start"]
-```
-
-Build and test locally:
-```bash
-docker build -t nexora-server .
-docker run -p 4000:4000 nexora-server
-```
-
----
-
-## 🔑 Environment Variables Reference
-
-Configure these in your cloud provider's dashboard:
-
-| Variable | Recommended Value | Description |
+| Layer | File Modified | Purpose / Fix |
 | :--- | :--- | :--- |
-| `NODE_ENV` | `production` | Enables production optimizations and disables debug logs |
-| `PORT` | `4000` *(Render sets this automatically)* | Port the Express server & WebSocket bus listen on |
-| `CORS_ORIGIN` | `*` *(or your Vercel frontend domain)* | Cross-Origin Resource Sharing policy |
-| `JWT_SECRET` | `nexora_secret_jwt_sign_key_99` | Secret key used for signing security tokens |
+| **Server Scripts** | [`server/package.json`](file:///c:/Users/franc/OneDrive/Documents/Projects/nexora/server/package.json) | Added script aliases: `"build:server"`, `"build"`, `"server"`, `"start"`. Resolves `npm error Missing script: "build:server"`. |
+| **Nested Path Trampoline** | [`server/server/dist/index.js`](file:///c:/Users/franc/OneDrive/Documents/Projects/nexora/server/server/dist/index.js) | Redirects any nested `/server/server/dist/index.js` execution back to `dist/index.js`. |
+| **Subdirectory Trampoline** | [`server/index.js`](file:///c:/Users/franc/OneDrive/Documents/Projects/nexora/server/index.js) | Auto-resolves `node index.js` when executed from `/server/`. |
+| **Root Trampoline** | [`index.js`](file:///c:/Users/franc/OneDrive/Documents/Projects/nexora/index.js) | Auto-locates `server/dist/index.js` or `dist/index.js` when executed from workspace root. |
+| **Declarative Blueprint** | [`render.yaml`](file:///c:/Users/franc/OneDrive/Documents/Projects/nexora/render.yaml) | Provides 1-click zero-config deployment on Render with health checks. |
+| **Smart API Resolution** | [`client/src/services/api.ts`](file:///c:/Users/franc/OneDrive/Documents/Projects/nexora/client/src/services/api.ts) | Auto-detects Vercel hosting, points to Render backend, and auto-derives secure WebSocket (`wss://`) URLs. |
 
 ---
 
-## 🏥 Multidisciplinary Troubleshooting Matrix
+## 📋 Recommended Platform Configurations
 
-### 1. `Error: Cannot find module '.../index.js'`
-* **Cause**: Mismatched Root Directory and Start Command.
-* **Fix**: Ensure that if Root Directory is blank/root, Start Command is `npm run start` or `node server/dist/index.js`. If Root Directory is `server`, Start Command is `node dist/index.js`.
-* **Auto-Healing**: The repository now includes universal trampolines (`index.js` and `server/index.js`) that automatically search and locate the compiled `dist` directory regardless of working directory context.
+### 1. Render Dashboard Settings
 
-### 2. `Port 4000 already in use` / `EADDRINUSE`
-* **Cause**: Multiple Node processes binding the same port locally or in development.
-* **Fix**: Cloud hosting platforms dynamically assign `process.env.PORT`. The NEXORA server listens on `process.env.PORT || 4000`, ensuring compatibility with Render's dynamically allocated ports.
-
-### 3. `WebSocket connection to 'wss://...' failed: HTTP 502`
-* **Cause**: Backend service sleeping (on free tier) or proxy timeout.
-* **Fix**: Render Free instances spin down after 15 minutes of inactivity. When the frontend wakes it up, allow 30 seconds for cold-start. On paid tiers, the WebSocket connection remains permanently active.
-
-### 4. `CORS Policy: No 'Access-Control-Allow-Origin' header`
-* **Cause**: Frontend domain blocked by API CORS policy.
-* **Fix**: Set `CORS_ORIGIN=*` in the Render environment variables, or set it to your explicit Vercel frontend URL: `https://nexora-app.vercel.app`.
-
-### 5. `TypeScript Compilation Failed during Build`
-* **Cause**: Missing `@types` dependencies.
-* **Fix**: Run `npm install` before `npm run build:server`. All devDependencies and type declarations are pre-installed in the root `package.json`.
+* **Root Directory**: `server` (or blank `./`)
+* **Environment**: `Node`
+* **Build Command**: `npm install && npm run build:server`
+* **Start Command**: `npm start` *(or `node dist/index.js` or `node server/dist/index.js` — all work)*
+* **Health Check Path**: `/api/stats`
+* **Environment Variables**:
+  ```env
+  NODE_ENV=production
+  PORT=4000
+  CORS_ORIGIN=*
+  JWT_SECRET=nexora_production_secure_key_99
+  ```
 
 ---
 
-## 🔗 Connecting Frontend (Vercel) to Backend (Render)
+### 2. Vercel Dashboard Settings
 
-Once your backend is deployed and green on Render (e.g., `https://nexora-api.onrender.com`):
-
-1. Open your **Vercel Project Dashboard** (Frontend).
-2. Go to **Settings** → **Environment Variables**.
-3. Add:
-   - `VITE_API_URL`: `https://nexora-api.onrender.com`
-   - `VITE_WS_URL`: `wss://nexora-api.onrender.com/ws`
-4. Trigger a **Redeploy** on Vercel.
-5. Your frontend will connect to the live backend, streaming mTLS identities, telemetry anomalies, and certificate revocation events.
+* **Root Directory**: `./` (or `client`)
+* **Framework Preset**: `Vite`
+* **Build Command**: `npm run build:client`
+* **Output Directory**: `client/dist`
+* **Environment Variables** (Optional, auto-configured):
+  ```env
+  VITE_API_URL=https://nexorraa.onrender.com
+  VITE_WS_URL=wss://nexorraa.onrender.com/ws
+  ```
 
 ---
 
-## ✅ Final Pre-Flight Checklist
+## 🚑 Multidisciplinary Troubleshooting Playbook
 
-- [x] Universal entrypoints `index.js` and `server/index.js` deployed.
-- [x] `server/package.json` created with fallback scripts.
-- [x] `render.yaml` Blueprint validated with `/api/stats` health check.
-- [x] Dynamic `process.env.PORT` binding active on `0.0.0.0`.
-- [x] WebSockets attached to HTTP server instance on `/ws`.
+### Issue 1: `npm error Missing script: "build:server"`
+* **Cause**: Running in `server/` when `server/package.json` only had `"build"`.
+* **Fix**: Both `"build"` and `"build:server"` are now configured in `server/package.json`.
+
+### Issue 2: `Error: Cannot find module '.../dist/index.js'`
+* **Cause**: Mismatch between Root Directory and Start Command path.
+* **Fix**: All 3 trampolines (`index.js`, `server/index.js`, `server/server/dist/index.js`) auto-redirect execution to the compiled output.
+
+### Issue 3: Render Free Tier Cold-Start (502 Bad Gateway / Spin-down)
+* **Cause**: Render Free Web Services sleep after 15 minutes of inactivity.
+* **Behavior**: The first request to `https://nexorraa.onrender.com/` takes ~30-50 seconds to spin up.
+* **Remedy**: The frontend WebSocket client includes auto-reconnect logic (`WebSocketClient.reconnect()` every 3s) that automatically restores live streaming as soon as the container wakes up.
+
+### Issue 4: Cross-Origin Resource Sharing (CORS) Block
+* **Cause**: Browser blocking requests between `https://nexorraa.vercel.app` and `https://nexorraa.onrender.com`.
+* **Fix**: Backend `server/src/index.ts` has CORS configured with `origin: process.env.CORS_ORIGIN || '*'`.
+
+---
+
+## 🔒 Verification & Health Check Command
+To verify the live backend health from any terminal:
+```bash
+curl -X GET https://nexorraa.onrender.com/api/stats
+```
+Expected Response:
+```json
+{
+  "success": true,
+  "stats": {
+    "totalDevices": 200,
+    "onlineDevices": 184,
+    "quarantinedDevices": 6,
+    "threatLevel": "ELEVATED"
+  }
+}
+```
