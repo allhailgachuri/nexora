@@ -19,6 +19,7 @@
 
 ## 📖 Table of Contents
 - [Executive Overview](#-executive-overview)
+- [Clean Editorial Landing Page & Product Showcase](#-clean-editorial-landing-page--product-showcase)
 - [The Problem NEXORA Solves](#-the-problem-nexora-solves)
 - [System Architecture](#-system-architecture)
 - [16 Core System Engines](#-16-core-system-engines)
@@ -45,6 +46,25 @@ Devices authenticate over **mutual TLS (mTLS)** using unique, short-lived X.509 
 2. **Tier 2 (Behavioral ML & Explainability)**: Multivariate Isolation Forest, Autoencoder reconstruction loss, and Mahalanobis scoring equipped with **feature-level SHAP attribution vectors** and active model drift tracking.
 
 Flagged deviations route into an integrated **SOC case-management subsystem** with safety playbooks (Quarantine, Certificate Revocation, Credential Rotation, Forced OTA), where **destructive or physically consequential actions on critical actuators (e.g., municipal water valves) are gated behind authorized human approval by policy**.
+
+---
+
+## 🎨 Clean Editorial Landing Page & Product Showcase
+
+When the application loads, visitors are greeted by a **clean, modern editorial landing page** (inspired by high-end design principles and tailored specifically for mission-critical enterprise IoT security):
+
+* **Editorial Typography & Hero**: Features a prominent headline (*"Intelligent fleet security for mission-critical IoT"*), live node status chips, and immediate 1-click transition into the SOC Command Center.
+* **Interactive Live Preview Container**: Directly embeds real-time fleet online counters, threat posture level, and an embedded Isolation Forest stream preview.
+* **Open Standards & Protocols Trust Bar**: Highlights compliance across `RFC 5280 PKI Authority`, `MQTT 5.0 Strict Topic ACLs`, `TimescaleDB Hypertables`, `Isolation Forest + SHAP`, `SHA-256 Hash Chain`, and `OWASP IoT Top 10`.
+* **6-Card Feature Grid**:
+  1. *Cryptographic Identity & PKI*: Instant 2048-bit RSA/ECDSA client certificates & CRL checks.
+  2. *Strict Broker Topic ACLs*: Multi-tenant regex authorization (`org/:orgId/site/:siteId/...`).
+  3. *Two-Tier Behavioral ML & SHAP*: Multivariate anomaly scoring with exact feature percentage contributions.
+  4. *Device State Shadow Sync*: Reported vs. desired state delta resolution.
+  5. *Human-in-the-Loop Safety Gates*: Digital analyst sign-off for critical physical actuators.
+  6. *Tamper-Evident SHA-256 Audit Ledger*: Immutable cryptographic hash chain.
+* **Direct Interactive Sandbox**: Allows visitors to trigger synthetic *Sensor Drift*, *Outlier Spikes*, *Cloned Certs*, and *Rogue Topics* directly from the landing page with sub-4ms feedback.
+* **Seamless Navigation**: Click **"Enter SOC Command Center"** to jump into the full dashboard, or click **"Landing Page"** in the top navigation bar or sidebar to return to the landing experience at any time.
 
 ---
 

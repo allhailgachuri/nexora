@@ -14,6 +14,7 @@ import { FirmwareCenter } from './components/firmware/FirmwareCenter';
 import { SchemaEditor } from './components/schemas/SchemaEditor';
 import { AttackSandbox } from './components/simulator/AttackSandbox';
 import { AuditExplorer } from './components/audit/AuditExplorer';
+import { LandingPage } from './components/landing/LandingPage';
 import { Modal } from './components/common/Modal';
 import {
   FleetStats,
@@ -27,6 +28,7 @@ import {
 
 const DashboardContent: React.FC = () => {
   const { currentUser } = useAuth();
+  const [isLandingView, setIsLandingView] = useState<boolean>(true);
   const [activeTab, setActiveTab] = useState<TabType>('overview');
   const [stats, setStats] = useState<FleetStats | null>(null);
   const [devices, setDevices] = useState<Device[]>([]);
@@ -187,22 +189,35 @@ const DashboardContent: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-[#0a0d14] text-slate-100 flex flex-col font-sans">
-      <Navbar
-        stats={stats}
-        wsConnected={wsConnected}
-        onOpenSimulator={() => setIsSimulatorModalOpen(true)}
-      />
-
-      <div className="flex-1 flex flex-col md:flex-row">
-        <Sidebar
-          activeTab={activeTab}
-          setActiveTab={(tab) => {
-            setActiveTab(tab);
-            setSelectedDeviceId(null);
-            setSelectedIncidentId(null);
+      {isLandingView ? (
+        <LandingPage
+          onEnterApp={(tab) => {
+            if (tab) setActiveTab(tab);
+            setIsLandingView(false);
           }}
           stats={stats}
+          wsConnected={wsConnected}
         />
+      ) : (
+        <>
+          <Navbar
+            stats={stats}
+            wsConnected={wsConnected}
+            onOpenSimulator={() => setIsSimulatorModalOpen(true)}
+            onGoToLanding={() => setIsLandingView(true)}
+          />
+
+          <div className="flex-1 flex flex-col md:flex-row">
+            <Sidebar
+              activeTab={activeTab}
+              setActiveTab={(tab) => {
+                setActiveTab(tab);
+                setSelectedDeviceId(null);
+                setSelectedIncidentId(null);
+              }}
+              stats={stats}
+              onGoToLanding={() => setIsLandingView(true)}
+            />
 
         <main className="flex-1 p-4 sm:p-6 max-w-7xl mx-auto w-full space-y-6">
           {/* SOC Fleet Overview */}
@@ -321,16 +336,18 @@ const DashboardContent: React.FC = () => {
         </main>
       </div>
 
-      {/* Attack Sandbox Floating Modal */}
-      <Modal
-        isOpen={isSimulatorModalOpen}
-        onClose={() => setIsSimulatorModalOpen(false)}
-        title="Interactive Attack & Anomaly Sandbox"
-        subtitle="Simulate realistic sensor drift, credential cloning, topic spoofing, and spikes in real time"
-        maxWidth="4xl"
-      >
-        <AttackSandbox />
-      </Modal>
+        {/* Attack Sandbox Floating Modal */}
+        <Modal
+          isOpen={isSimulatorModalOpen}
+          onClose={() => setIsSimulatorModalOpen(false)}
+          title="Interactive Attack & Anomaly Sandbox"
+          subtitle="Simulate realistic sensor drift, credential cloning, topic spoofing, and spikes in real time"
+          maxWidth="4xl"
+        >
+          <AttackSandbox />
+        </Modal>
+      </>
+      )}
     </div>
   );
 };

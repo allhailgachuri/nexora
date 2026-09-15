@@ -7,9 +7,10 @@ interface NavbarProps {
   stats: FleetStats | null;
   wsConnected: boolean;
   onOpenSimulator: () => void;
+  onGoToLanding?: () => void;
 }
 
-export const Navbar: React.FC<NavbarProps> = ({ stats, wsConnected, onOpenSimulator }) => {
+export const Navbar: React.FC<NavbarProps> = ({ stats, wsConnected, onOpenSimulator, onGoToLanding }) => {
   const { currentUser, users, switchUser } = useAuth();
 
   const threatColor = {
@@ -22,14 +23,18 @@ export const Navbar: React.FC<NavbarProps> = ({ stats, wsConnected, onOpenSimula
   return (
     <header className="sticky top-0 z-40 h-16 border-b border-slate-800 bg-[#0a0d14]/90 backdrop-blur-xl px-4 sm:px-6 flex items-center justify-between">
       {/* Brand & Platform Identity */}
-      <div className="flex items-center gap-3">
-        <div className="relative flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-slate-900 to-slate-950 border border-cyan-500/30 shadow-cyber-glow overflow-hidden p-1">
+      <div
+        onClick={onGoToLanding}
+        className="flex items-center gap-3 cursor-pointer group"
+        title="Click to view Landing Page"
+      >
+        <div className="relative flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-slate-900 to-slate-950 border border-cyan-500/30 group-hover:border-cyan-400 shadow-cyber-glow overflow-hidden p-1 transition-all">
           <img src="/nexora.png" alt="NEXORA Logo" className="w-full h-full object-contain" />
           <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-emerald-400 border-2 border-[#0a0d14]" />
         </div>
         <div>
           <div className="flex items-center gap-2">
-            <span className="text-lg font-black tracking-wider text-white font-mono">NEXORA</span>
+            <span className="text-lg font-black tracking-wider text-white font-mono group-hover:text-cyan-400 transition-colors">NEXORA</span>
             <span className="text-[10px] font-semibold uppercase px-1.5 py-0.5 rounded bg-cyan-950/80 text-cyan-400 border border-cyan-700/50">
               Fleet Defense
             </span>
@@ -60,6 +65,16 @@ export const Navbar: React.FC<NavbarProps> = ({ stats, wsConnected, onOpenSimula
 
       {/* Right Controls & User Role Switcher */}
       <div className="flex items-center gap-3">
+        {/* Landing Page Button */}
+        {onGoToLanding && (
+          <button
+            onClick={onGoToLanding}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-300 bg-slate-900/80 hover:bg-slate-800 border border-slate-700/80 hover:border-cyan-500/50 transition-all"
+          >
+            <span>Landing Page</span>
+          </button>
+        )}
+
         {/* Simulator Attack Sandbox Button */}
         <button
           onClick={onOpenSimulator}

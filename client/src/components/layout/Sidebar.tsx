@@ -27,9 +27,10 @@ interface SidebarProps {
   activeTab: TabType;
   setActiveTab: (tab: TabType) => void;
   stats: FleetStats | null;
+  onGoToLanding?: () => void;
 }
 
-export const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, stats }) => {
+export const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, stats, onGoToLanding }) => {
   const navItems = [
     { id: 'overview', label: 'SOC Fleet Command', icon: LayoutDashboard },
     {
@@ -68,8 +69,16 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, stats
   return (
     <aside className="w-64 border-r border-slate-800/80 bg-[#0c101a] flex flex-col justify-between p-3 min-h-[calc(100vh-4rem)]">
       <div className="space-y-1">
-        <div className="px-3 py-2 text-[11px] font-bold uppercase tracking-wider text-slate-400">
-          Command Hub
+        <div className="flex items-center justify-between px-3 py-2 text-[11px] font-bold uppercase tracking-wider text-slate-400">
+          <span>Command Hub</span>
+          {onGoToLanding && (
+            <button
+              onClick={onGoToLanding}
+              className="text-[10px] text-cyan-400 hover:text-cyan-300 font-semibold normal-case"
+            >
+              Landing →
+            </button>
+          )}
         </div>
         {navItems.map(item => {
           const Icon = item.icon;
