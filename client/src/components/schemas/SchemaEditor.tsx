@@ -90,67 +90,74 @@ export const SchemaEditor: React.FC = () => {
   return (
     <div className="space-y-6 text-xs">
       {/* Header Bar */}
-      <div className="glass-panel rounded-2xl p-5 border border-slate-800 flex flex-col md:flex-row md:items-center justify-between gap-3">
-        <div className="flex items-center gap-3">
-          <div className="p-3 rounded-xl bg-cyan-950/60 border border-cyan-500/40 text-cyan-400">
-            <FileCode2 className="w-6 h-6" />
+      <div className="organic-glass-card p-6 border-[#708A7C]/30">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-[#26372E]">
+          <div className="flex items-center gap-4">
+            <div className="p-3.5 rounded-2xl bg-[#2E4036] border border-[#708A7C]/30 text-[#30D158]">
+              <FileCode2 className="w-6 h-6" />
+            </div>
+            <div>
+              <div className="flex items-center gap-3">
+                <h2 className="text-base font-bold text-white tracking-tight">
+                  Dynamic Telemetry Schemas & Topic ACL Engine
+                </h2>
+                <span className="px-3 py-0.5 rounded-full bg-[#2E4036] text-[#30D158] border border-[#708A7C]/30 text-[10px] font-bold font-mono">
+                  MQTT 5.0 ACL Contract
+                </span>
+              </div>
+              <p className="text-[#94A39B] text-xs mt-1">
+                Domain-agnostic validation rules, rate-of-change boundaries, and physical consequence gates enforced at ingestion.
+              </p>
+            </div>
           </div>
-          <div>
-            <h2 className="text-base font-bold text-white tracking-wide">
-              Dynamic Telemetry Schema & Device Type Engine
-            </h2>
-            <p className="text-slate-400 text-[11px] mt-0.5">
-              Generic, domain-agnostic schema definitions for data bounds, rate limits, and physical actuator safety rules.
-            </p>
-          </div>
+
+          <button
+            onClick={() => setIsNewOpen(true)}
+            className="magnetic-btn flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#CC5833] hover:bg-[#B54926] text-white font-semibold shadow-clay-glow transition-all self-start md:self-auto"
+          >
+            <Plus className="w-4 h-4" />
+            <span>New Schema Definition</span>
+          </button>
         </div>
 
-        <button
-          onClick={() => setIsNewOpen(true)}
-          className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 text-white font-semibold shadow-cyber-glow transition-all self-start md:self-auto"
-        >
-          <Plus className="w-4 h-4" />
-          <span>New Device Type Schema</span>
-        </button>
+        {statusMessage && (
+          <div className="mt-4 p-3.5 rounded-2xl bg-[#30D158]/15 border border-[#30D158]/30 text-[#F4F2EC]">
+            {statusMessage}
+          </div>
+        )}
       </div>
-
-      {statusMessage && (
-        <div className="p-3 rounded-xl bg-cyan-950/50 border border-cyan-500/50 text-cyan-200">
-          {statusMessage}
-        </div>
-      )}
 
       {/* Grid: Type Selector & Schema Details */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left Col: Device Types List */}
-        <div className="glass-panel rounded-2xl p-5 border border-slate-800 space-y-3">
-          <h3 className="text-sm font-bold uppercase tracking-wider text-white pb-3 border-b border-slate-800">
+        <div className="organic-glass-card p-6 space-y-4">
+          <h3 className="text-xs font-bold uppercase tracking-wider text-white pb-3 border-b border-[#26372E] font-mono">
             Registered Device Types ({deviceTypes.length})
           </h3>
 
-          <div className="space-y-2">
+          <div className="space-y-3 max-h-[500px] overflow-y-auto pr-1">
             {deviceTypes.map(type => {
               const isSelected = selectedType?.id === type.id;
               return (
                 <div
                   key={type.id}
                   onClick={() => setSelectedType(type)}
-                  className={`p-3 rounded-xl border cursor-pointer transition-all ${
+                  className={`p-4 rounded-2xl border cursor-pointer transition-all hover-lift ${
                     isSelected
-                      ? 'bg-cyan-950/40 border-cyan-500/60 shadow-cyber-glow text-white'
-                      : 'bg-[#0c101a] border-slate-800 text-slate-300 hover:border-slate-700'
+                      ? 'bg-[#1C2B22] border-[#CC5833]/60 shadow-organic-hover text-white'
+                      : 'bg-[#142019] border-[#26372E] text-[#CBD4CF] hover:border-[#708A7C]/50'
                   }`}
                 >
                   <div className="flex items-center justify-between">
                     <span className="font-bold text-sm">{type.name}</span>
-                    <span className="text-[10px] font-mono text-cyan-400">{type.code}</span>
+                    <span className="text-[10px] font-mono text-[#30D158]">{type.code}</span>
                   </div>
-                  <div className="flex items-center gap-2 text-[10px] text-slate-400 mt-1">
+                  <div className="flex items-center gap-2 text-[10px] text-[#708A7C] mt-2">
                     <span>{type.category}</span>
                     <span>•</span>
                     <span>{type.telemetrySchema?.fields?.length || 0} Telemetry Fields</span>
                     {type.isActuatorOrCritical && (
-                      <span className="text-amber-400 font-bold">• Actuator (Gated)</span>
+                      <span className="text-[#E85D04] font-bold">• Actuator (Gated)</span>
                     )}
                   </div>
                 </div>
@@ -160,22 +167,22 @@ export const SchemaEditor: React.FC = () => {
         </div>
 
         {/* Right 2 Cols: Schema Inspector */}
-        <div className="lg:col-span-2 glass-panel rounded-2xl p-5 border border-slate-800 space-y-4">
+        <div className="lg:col-span-2 organic-glass-card p-6 space-y-4">
           {selectedType ? (
             <div>
-              <div className="flex items-center justify-between pb-3 border-b border-slate-800">
+              <div className="flex items-center justify-between pb-3 border-b border-[#26372E]">
                 <div>
-                  <h3 className="text-sm font-bold text-white uppercase tracking-wider">
-                    {selectedType.name} Schema Specification
+                  <h3 className="text-xs font-bold text-white uppercase tracking-wider font-mono">
+                    {selectedType.name} Schema Contract
                   </h3>
-                  <p className="text-[11px] text-slate-400 mt-0.5">{selectedType.description}</p>
+                  <p className="text-xs text-[#94A39B] mt-1">{selectedType.description}</p>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="px-2 py-0.5 rounded bg-slate-800 text-slate-300 font-mono text-[10px]">
+                  <span className="px-3 py-0.5 rounded-full bg-[#142019] text-[#9DB3A6] font-mono text-[10px] border border-[#26372E]">
                     v{selectedType.telemetrySchema.version}
                   </span>
                   {selectedType.isActuatorOrCritical && (
-                    <span className="px-2 py-0.5 rounded bg-amber-950 text-amber-400 border border-amber-800 text-[10px] font-bold">
+                    <span className="px-3 py-0.5 rounded-full bg-[#E85D04]/20 text-[#E85D04] border border-[#E85D04]/40 text-[10px] font-bold">
                       Critical Actuator Gate
                     </span>
                   )}
@@ -184,38 +191,38 @@ export const SchemaEditor: React.FC = () => {
 
               {/* Fields Table */}
               <div className="mt-4 overflow-x-auto">
-                <table className="w-full text-left text-xs text-slate-300">
-                  <thead className="bg-[#0c101a] text-[11px] uppercase tracking-wider text-slate-400 border-b border-slate-800">
+                <table className="w-full text-left text-xs text-[#CBD4CF]">
+                  <thead className="bg-[#142019] text-[10px] font-mono uppercase tracking-wider text-[#708A7C] border-b border-[#26372E]">
                     <tr>
-                      <th className="py-2.5 px-3">Field Key / Label</th>
-                      <th className="py-2.5 px-3">Type / Unit</th>
-                      <th className="py-2.5 px-3">Min / Max Bounds</th>
-                      <th className="py-2.5 px-3">Max Rate of Change</th>
-                      <th className="py-2.5 px-3">Policy Rules</th>
+                      <th className="py-3 px-4">Field Key / Label</th>
+                      <th className="py-3 px-4">Type / Unit</th>
+                      <th className="py-3 px-4">Min / Max Bounds</th>
+                      <th className="py-3 px-4">Rate Limit</th>
+                      <th className="py-3 px-4">Policy</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-800 font-mono">
+                  <tbody className="divide-y divide-[#26372E] font-mono">
                     {selectedType.telemetrySchema.fields.map(field => (
-                      <tr key={field.name} className="hover:bg-slate-800/30">
-                        <td className="py-2.5 px-3">
-                          <div className="font-bold text-cyan-300">{field.name}</div>
-                          <div className="text-[10px] font-sans text-slate-400">{field.displayName}</div>
+                      <tr key={field.name} className="hover:bg-[#1C2B22]/60">
+                        <td className="py-3 px-4">
+                          <div className="font-bold text-white font-mono">{field.name}</div>
+                          <div className="text-[10px] font-sans text-[#708A7C]">{field.displayName}</div>
                         </td>
-                        <td className="py-2.5 px-3 font-sans">
+                        <td className="py-3 px-4 font-sans">
                           <div>{field.type}</div>
-                          <div className="text-[10px] text-slate-400 font-mono">{field.unit || 'n/a'}</div>
+                          <div className="text-[10px] text-[#708A7C] font-mono">{field.unit || 'n/a'}</div>
                         </td>
-                        <td className="py-2.5 px-3">
+                        <td className="py-3 px-4">
                           {field.min !== undefined ? `${field.min} to ${field.max}` : 'Unbounded'}
                         </td>
-                        <td className="py-2.5 px-3 text-amber-300">
+                        <td className="py-3 px-4 text-[#CC5833]">
                           {field.maxRateOfChange ? `±${field.maxRateOfChange} / tick` : 'None'}
                         </td>
-                        <td className="py-2.5 px-3 font-sans">
+                        <td className="py-3 px-4 font-sans">
                           {field.isCritical ? (
-                            <span className="text-[10px] text-rose-400 font-bold">Actuator Gated</span>
+                            <span className="text-[10px] text-[#E30000] font-bold">Actuator Gated</span>
                           ) : (
-                            <span className="text-[10px] text-emerald-400">Sensor Telemetry</span>
+                            <span className="text-[10px] text-[#30D158]">Sensor Telemetry</span>
                           )}
                         </td>
                       </tr>
@@ -225,7 +232,7 @@ export const SchemaEditor: React.FC = () => {
               </div>
             </div>
           ) : (
-            <div className="text-center py-12 text-slate-400">
+            <div className="text-center py-16 text-[#708A7C]">
               Select a device type to inspect its telemetry schema.
             </div>
           )}
@@ -243,44 +250,44 @@ export const SchemaEditor: React.FC = () => {
         <form onSubmit={handleSaveType} className="space-y-4 text-xs">
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-slate-300 font-semibold mb-1">Device Type Name</label>
+              <label className="block text-[#CBD4CF] font-semibold mb-1.5">Device Type Name</label>
               <input
                 type="text"
                 required
                 placeholder="e.g. Ultrasonic Gas Flow Sensor"
                 value={name}
                 onChange={e => setName(e.target.value)}
-                className="w-full bg-[#0c101a] border border-slate-700 rounded-lg p-2 text-white focus:outline-none focus:border-cyan-500"
+                className="w-full bg-[#142019] border border-[#26372E] rounded-full px-4 py-2.5 text-white focus:outline-none focus:border-[#CC5833]"
               />
             </div>
 
             <div>
-              <label className="block text-slate-300 font-semibold mb-1">Type Code</label>
+              <label className="block text-[#CBD4CF] font-semibold mb-1.5">Type Code</label>
               <input
                 type="text"
                 required
                 placeholder="e.g. GAS-FLOW-ULTRASONIC"
                 value={code}
                 onChange={e => setCode(e.target.value)}
-                className="w-full bg-[#0c101a] border border-slate-700 rounded-lg p-2 text-white font-mono focus:outline-none focus:border-cyan-500"
+                className="w-full bg-[#142019] border border-[#26372E] rounded-full px-4 py-2.5 text-white font-mono focus:outline-none focus:border-[#CC5833]"
               />
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-slate-300 font-semibold mb-1">Category</label>
+              <label className="block text-[#CBD4CF] font-semibold mb-1.5">Category</label>
               <select
                 value={category}
                 onChange={e => setCategory(e.target.value as any)}
-                className="w-full bg-[#0c101a] border border-slate-700 rounded-lg p-2 text-white focus:outline-none focus:border-cyan-500"
+                className="w-full bg-[#142019] border border-[#26372E] rounded-full px-4 py-2.5 text-white focus:outline-none focus:border-[#CC5833] cursor-pointer"
               >
-                <option value="AGRICULTURE">AGRICULTURE</option>
-                <option value="WATER">WATER</option>
-                <option value="ENERGY">ENERGY</option>
-                <option value="INDUSTRIAL">INDUSTRIAL</option>
-                <option value="GATEWAY">GATEWAY</option>
-                <option value="CUSTOM">CUSTOM</option>
+                <option value="AGRICULTURE" className="bg-[#171C19]">AGRICULTURE</option>
+                <option value="WATER" className="bg-[#171C19]">WATER</option>
+                <option value="ENERGY" className="bg-[#171C19]">ENERGY</option>
+                <option value="INDUSTRIAL" className="bg-[#171C19]">INDUSTRIAL</option>
+                <option value="GATEWAY" className="bg-[#171C19]">GATEWAY</option>
+                <option value="CUSTOM" className="bg-[#171C19]">CUSTOM</option>
               </select>
             </div>
 
@@ -290,82 +297,82 @@ export const SchemaEditor: React.FC = () => {
                 id="isActuator"
                 checked={isActuator}
                 onChange={e => setIsActuator(e.target.checked)}
-                className="rounded border-slate-700 bg-[#0c101a] text-cyan-500 w-4 h-4 cursor-pointer"
+                className="rounded border-[#26372E] bg-[#142019] text-[#CC5833] w-4 h-4 cursor-pointer"
               />
-              <label htmlFor="isActuator" className="text-slate-300 font-semibold cursor-pointer">
+              <label htmlFor="isActuator" className="text-[#CBD4CF] font-semibold cursor-pointer">
                 Critical Actuator (Requires Human Sign-off for Playbooks)
               </label>
             </div>
           </div>
 
           <div>
-            <label className="block text-slate-300 font-semibold mb-1">Description</label>
+            <label className="block text-[#CBD4CF] font-semibold mb-1.5">Description</label>
             <input
               type="text"
               placeholder="e.g. High-pressure pipeline monitoring node"
               value={description}
               onChange={e => setDescription(e.target.value)}
-              className="w-full bg-[#0c101a] border border-slate-700 rounded-lg p-2 text-white focus:outline-none focus:border-cyan-500"
+              className="w-full bg-[#142019] border border-[#26372E] rounded-full px-4 py-2.5 text-white focus:outline-none focus:border-[#CC5833]"
             />
           </div>
 
           {/* Dynamic Field Builder */}
-          <div className="p-3 rounded-xl bg-[#0c101a] border border-slate-800 space-y-3">
+          <div className="p-4 rounded-2xl bg-[#142019] border border-[#26372E] space-y-3">
             <div className="flex items-center justify-between">
-              <span className="font-bold text-white uppercase text-[11px]">Telemetry Fields Schema</span>
+              <span className="font-bold text-white uppercase text-[10px] font-mono">Telemetry Fields Schema</span>
               <button
                 type="button"
                 onClick={addFieldRow}
-                className="flex items-center gap-1 text-[11px] text-cyan-400 hover:text-cyan-300"
+                className="flex items-center gap-1.5 text-[11px] text-[#30D158] hover:underline"
               >
                 <Plus className="w-3.5 h-3.5" />
-                <span>Add Metric</span>
+                <span>Add Metric Field</span>
               </button>
             </div>
 
             <div className="space-y-2 max-h-48 overflow-y-auto pr-1">
               {fields.map((f, idx) => (
-                <div key={idx} className="grid grid-cols-6 gap-2 items-center bg-[#070a10] p-2 rounded-lg border border-slate-800">
+                <div key={idx} className="grid grid-cols-6 gap-2 items-center bg-[#111614] p-2.5 rounded-xl border border-[#26372E]">
                   <input
                     type="text"
                     placeholder="Field key"
                     value={f.name}
                     onChange={e => updateField(idx, 'name', e.target.value)}
-                    className="bg-[#0c101a] border border-slate-700 rounded p-1 text-white font-mono text-[11px]"
+                    className="bg-[#142019] border border-[#26372E] rounded-lg p-1.5 text-white font-mono text-[11px]"
                   />
                   <input
                     type="text"
                     placeholder="Label"
                     value={f.displayName}
                     onChange={e => updateField(idx, 'displayName', e.target.value)}
-                    className="bg-[#0c101a] border border-slate-700 rounded p-1 text-white text-[11px]"
+                    className="bg-[#142019] border border-[#26372E] rounded-lg p-1.5 text-white text-[11px]"
                   />
                   <input
                     type="text"
                     placeholder="Unit (e.g. %)"
                     value={f.unit || ''}
                     onChange={e => updateField(idx, 'unit', e.target.value)}
-                    className="bg-[#0c101a] border border-slate-700 rounded p-1 text-white font-mono text-[11px]"
+                    className="bg-[#142019] border border-[#26372E] rounded-lg p-1.5 text-white font-mono text-[11px]"
                   />
                   <input
                     type="number"
                     placeholder="Min"
                     value={f.min !== undefined ? f.min : ''}
                     onChange={e => updateField(idx, 'min', e.target.value ? Number(e.target.value) : undefined)}
-                    className="bg-[#0c101a] border border-slate-700 rounded p-1 text-white font-mono text-[11px]"
+                    className="bg-[#142019] border border-[#26372E] rounded-lg p-1.5 text-white font-mono text-[11px]"
                   />
                   <input
                     type="number"
                     placeholder="Max"
                     value={f.max !== undefined ? f.max : ''}
                     onChange={e => updateField(idx, 'max', e.target.value ? Number(e.target.value) : undefined)}
-                    className="bg-[#0c101a] border border-slate-700 rounded p-1 text-white font-mono text-[11px]"
+                    className="bg-[#142019] border border-[#26372E] rounded-lg p-1.5 text-white font-mono text-[11px]"
                   />
                   <div className="flex items-center justify-end">
                     <button
                       type="button"
                       onClick={() => removeFieldRow(idx)}
-                      className="text-rose-400 hover:text-rose-300 p-1"
+                      className="text-[#E30000] hover:text-rose-300 p-1"
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>
@@ -375,18 +382,18 @@ export const SchemaEditor: React.FC = () => {
             </div>
           </div>
 
-          <div className="flex items-center justify-end gap-2 pt-3 border-t border-slate-800">
+          <div className="flex items-center justify-end gap-3 pt-3 border-t border-[#26372E]">
             <button
               type="button"
               onClick={() => setIsNewOpen(false)}
-              className="px-4 py-2 rounded-lg bg-slate-800 text-slate-300 font-semibold"
+              className="px-5 py-2.5 rounded-full bg-[#142019] text-[#CBD4CF] hover:bg-[#1E2622] font-semibold border border-[#26372E]"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={isSaving}
-              className="px-4 py-2 rounded-lg bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 text-white font-semibold disabled:opacity-50"
+              className="magnetic-btn px-6 py-2.5 rounded-full bg-[#CC5833] hover:bg-[#B54926] text-white font-semibold disabled:opacity-50 shadow-clay-glow"
             >
               {isSaving ? 'Registering...' : 'Save Schema'}
             </button>

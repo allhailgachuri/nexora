@@ -21,18 +21,18 @@ export const LiveAlertTicker: React.FC<LiveAlertTickerProps> = ({
   ].sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()).slice(0, 8);
 
   return (
-    <div className="glass-panel rounded-2xl p-5 border border-slate-800">
-      <div className="flex items-center justify-between pb-3 border-b border-slate-800">
-        <div className="flex items-center gap-2">
-          <ShieldAlert className="w-4 h-4 text-cyan-400" />
-          <h3 className="text-sm font-bold uppercase tracking-wider text-white">Live Threat & Anomaly Feed</h3>
+    <div className="organic-glass-card p-6">
+      <div className="flex items-center justify-between pb-4 border-b border-[#26372E]">
+        <div className="flex items-center gap-2.5">
+          <ShieldAlert className="w-4 h-4 text-[#CC5833]" />
+          <h3 className="text-xs font-bold uppercase tracking-wider text-white font-mono">Live Threat & Anomaly Feed</h3>
         </div>
-        <span className="text-[11px] font-mono text-slate-400">Real-Time Ingestion</span>
+        <span className="text-[11px] font-mono text-[#708A7C]">Sub-Second Ingestion</span>
       </div>
 
-      <div className="mt-3 space-y-2.5">
+      <div className="mt-4 space-y-3">
         {combined.length === 0 ? (
-          <div className="text-center py-6 text-xs text-slate-400">
+          <div className="text-center py-8 text-xs text-[#708A7C]">
             No active threat events detected across fleet.
           </div>
         ) : (
@@ -41,33 +41,33 @@ export const LiveAlertTicker: React.FC<LiveAlertTickerProps> = ({
             return (
               <div
                 key={item.id}
-                className="flex items-center justify-between p-3 rounded-xl bg-[#0c101a] border border-slate-800/80 hover:border-slate-700 transition-all text-xs"
+                className="flex items-center justify-between p-3.5 rounded-2xl bg-[#142019] border border-[#26372E] hover:border-[#CC5833]/40 transition-all text-xs hover-lift"
               >
-                <div className="flex items-center gap-3">
-                  <div className={`p-2 rounded-lg ${isSec ? 'bg-rose-950/40 text-rose-400' : 'bg-purple-950/40 text-purple-400'}`}>
+                <div className="flex items-center gap-3.5">
+                  <div className={`p-2.5 rounded-2xl ${isSec ? 'bg-[#E30000]/15 text-[#E30000]' : 'bg-[#CC5833]/15 text-[#CC5833]'}`}>
                     {isSec ? <ShieldAlert className="w-4 h-4" /> : <AlertTriangle className="w-4 h-4" />}
                   </div>
                   <div>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2.5">
                       <span className="font-semibold text-white">
                         {isSec ? item.eventType.replace(/_/g, ' ') : item.anomalyType.replace(/_/g, ' ')}
                       </span>
                       <SeverityBadge severity={item.severity} />
                     </div>
-                    <p className="text-[11px] text-slate-400 mt-0.5 max-w-md truncate">
+                    <p className="text-[11px] text-[#94A39B] mt-0.5 max-w-lg truncate">
                       {isSec ? item.details : `Deviation score: ${(item.anomalyScore * 100).toFixed(0)}% (${item.contributingFeatures?.join(', ')})`}
                     </p>
                   </div>
                 </div>
 
                 <div className="flex items-center gap-3">
-                  <span className="text-[10px] font-mono text-slate-400">
+                  <span className="text-[10px] font-mono text-[#708A7C]">
                     {new Date(item.timestamp).toLocaleTimeString()}
                   </span>
                   {item.deviceId && (
                     <button
                       onClick={() => onSelectDevice && onSelectDevice(item.deviceId)}
-                      className="p-1.5 rounded-lg text-slate-400 hover:text-cyan-400 hover:bg-slate-800 transition-colors"
+                      className="p-2 rounded-full text-[#94A39B] hover:text-[#CC5833] hover:bg-[#1C2B22] transition-colors"
                       title="Inspect Device"
                     >
                       <ArrowRight className="w-4 h-4" />

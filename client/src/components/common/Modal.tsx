@@ -47,29 +47,29 @@ export const Modal: React.FC<ModalProps> = ({
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 overflow-y-auto">
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-black/80 backdrop-blur-sm transition-opacity"
+        className="fixed inset-0 bg-[#0E1411]/80 backdrop-blur-md transition-opacity"
         onClick={onClose}
       />
 
       {/* Dialog */}
-      <div className={`relative w-full ${maxWidthClass} rounded-2xl bg-[#101522] border border-slate-700/80 p-6 shadow-2xl z-10 my-8 overflow-hidden`}>
+      <div className={`relative w-full ${maxWidthClass} rounded-[2.5rem] bg-[#171C19] border border-[#2E4036] p-6 sm:p-8 shadow-organic-hover z-10 my-8 overflow-hidden`}>
         {/* Glow accent */}
-        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-500" />
+        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#2E4036] via-[#CC5833] to-[#708A7C]" />
 
-        <div className="flex items-start justify-between pb-4 border-b border-slate-800">
+        <div className="flex items-start justify-between pb-4 border-b border-[#26372E]">
           <div>
-            <h3 className="text-lg font-bold text-white tracking-wide">{title}</h3>
-            {subtitle && <p className="text-xs text-slate-400 mt-0.5">{subtitle}</p>}
+            <h3 className="text-xl font-bold text-white tracking-tight">{title}</h3>
+            {subtitle && <p className="text-xs text-[#94A39B] mt-1">{subtitle}</p>}
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+            className="p-2 rounded-full text-[#94A39B] hover:text-white bg-[#142019] hover:bg-[#1E2622] border border-[#26372E] transition-colors"
           >
-            <X className="w-5 h-5" />
+            <X className="w-4 h-4" />
           </button>
         </div>
 
-        <div className="mt-4 max-h-[75vh] overflow-y-auto pr-1">{children}</div>
+        <div className="mt-6 max-h-[75vh] overflow-y-auto pr-1">{children}</div>
       </div>
     </div>
   );

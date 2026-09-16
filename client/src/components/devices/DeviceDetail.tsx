@@ -63,26 +63,26 @@ export const DeviceDetail: React.FC<DeviceDetailProps> = ({
     ...t.values
   }));
 
-  // Colors for dynamic chart lines
-  const lineColors = ['#06b6d4', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899'];
+  // Colors for dynamic chart lines (Organic tech palette)
+  const lineColors = ['#30D158', '#CC5833', '#2997FF', '#E85D04', '#9D65C9'];
   const numericFields = deviceType.telemetrySchema.fields.filter(f => f.type === 'number');
 
   return (
     <div className="space-y-6">
       {/* Device Header Bar */}
-      <div className="glass-panel rounded-2xl p-5 border border-slate-800">
+      <div className="organic-glass-card p-6">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div className="flex items-center gap-3.5">
-            <div className="p-3 rounded-xl bg-cyan-950/60 border border-cyan-500/40 text-cyan-400">
+          <div className="flex items-center gap-4">
+            <div className="p-3 rounded-2xl bg-[#2E4036] border border-[#708A7C]/30 text-[#30D158]">
               <Server className="w-6 h-6" />
             </div>
             <div>
-              <div className="flex items-center gap-2.5">
-                <h2 className="text-lg font-bold text-white tracking-wide">{device.name}</h2>
+              <div className="flex items-center gap-3">
+                <h2 className="text-xl font-bold text-white tracking-tight">{device.name}</h2>
                 <StateBadge state={device.lifecycleState} />
               </div>
-              <div className="flex flex-wrap items-center gap-3 text-xs text-slate-400 mt-1">
-                <span className="font-mono text-cyan-300">{device.serialNumber}</span>
+              <div className="flex flex-wrap items-center gap-3 text-xs text-[#94A39B] mt-1.5 font-sans">
+                <span className="font-mono text-[#F4F2EC]">{device.serialNumber}</span>
                 <span>•</span>
                 <span>{deviceType.name}</span>
                 <span>•</span>
@@ -94,11 +94,11 @@ export const DeviceDetail: React.FC<DeviceDetailProps> = ({
           </div>
 
           {/* Quick Lifecycle Action Buttons */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2.5">
             {device.lifecycleState !== 'QUARANTINED' ? (
               <button
                 onClick={() => onStateChange('QUARANTINED', 'Analyst manual containment')}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-rose-950/60 hover:bg-rose-900/80 border border-rose-500/40 text-rose-300 text-xs font-semibold transition-all"
+                className="magnetic-btn flex items-center gap-2 px-4 py-2 rounded-full bg-[#E30000]/15 hover:bg-[#E30000]/30 border border-[#E30000]/30 text-[#E30000] text-xs font-semibold transition-all"
               >
                 <Flame className="w-3.5 h-3.5" />
                 <span>Quarantine</span>
@@ -106,7 +106,7 @@ export const DeviceDetail: React.FC<DeviceDetailProps> = ({
             ) : (
               <button
                 onClick={() => onStateChange('ACTIVE', 'Device cleared and reinstated')}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-950/60 hover:bg-emerald-900/80 border border-emerald-500/40 text-emerald-300 text-xs font-semibold transition-all"
+                className="magnetic-btn flex items-center gap-2 px-4 py-2 rounded-full bg-[#30D158]/15 hover:bg-[#30D158]/30 border border-[#30D158]/30 text-[#30D158] text-xs font-semibold transition-all"
               >
                 <ShieldCheck className="w-3.5 h-3.5" />
                 <span>Reinstate Node</span>
@@ -115,16 +115,16 @@ export const DeviceDetail: React.FC<DeviceDetailProps> = ({
 
             <button
               onClick={onRotateCert}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-cyan-950/60 hover:bg-cyan-900/80 border border-cyan-500/40 text-cyan-300 text-xs font-semibold transition-all"
+              className="magnetic-btn flex items-center gap-2 px-4 py-2 rounded-full bg-[#142019] hover:bg-[#1E2622] border border-[#26372E] text-[#9DB3A6] hover:text-white text-xs font-semibold transition-all"
             >
-              <RotateCw className="w-3.5 h-3.5" />
+              <RotateCw className="w-3.5 h-3.5 text-[#CC5833]" />
               <span>Rotate Cert</span>
             </button>
           </div>
         </div>
 
         {/* Multi-Tab Navigation */}
-        <div className="flex items-center gap-2 border-t border-slate-800/80 mt-5 pt-3 overflow-x-auto">
+        <div className="flex items-center gap-2 border-t border-[#26372E] mt-6 pt-4 overflow-x-auto">
           {[
             { id: 'telemetry', label: 'Telemetry Stream', icon: Activity, count: recentTelemetry.length },
             { id: 'pki', label: 'X.509 Identity & Cert', icon: KeyRound, count: certificate ? 'Valid' : 'None' },
@@ -138,16 +138,16 @@ export const DeviceDetail: React.FC<DeviceDetailProps> = ({
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id as any)}
-                className={`flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-semibold transition-all ${
+                className={`flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold transition-all ${
                   isActive
-                    ? 'bg-cyan-950 text-cyan-400 border border-cyan-500/40'
-                    : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
+                    ? 'bg-[#2E4036] text-white border border-[#708A7C]/40 shadow-sm'
+                    : 'text-[#94A39B] hover:text-white hover:bg-[#142019]'
                 }`}
               >
-                <Icon className="w-4 h-4" />
+                <Icon className={`w-4 h-4 ${isActive ? 'text-[#CC5833]' : 'text-[#708A7C]'}`} />
                 <span>{tab.label}</span>
                 {tab.count !== undefined && (
-                  <span className="text-[10px] px-1.5 py-0.2 rounded bg-slate-800 text-slate-300 font-mono">
+                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#142019] text-[#CBD4CF] font-mono">
                     {tab.count}
                   </span>
                 )}
@@ -159,12 +159,12 @@ export const DeviceDetail: React.FC<DeviceDetailProps> = ({
 
       {/* Tab Contents */}
       {activeTab === 'telemetry' && (
-        <div className="glass-panel rounded-2xl p-5 border border-slate-800 space-y-4">
-          <div className="flex items-center justify-between pb-3 border-b border-slate-800">
-            <h3 className="text-sm font-bold text-white uppercase tracking-wider">
+        <div className="organic-glass-card p-6 space-y-4">
+          <div className="flex items-center justify-between pb-3 border-b border-[#26372E]">
+            <h3 className="text-xs font-bold text-white uppercase tracking-wider font-mono">
               Time-Series Telemetry Stream
             </h3>
-            <span className="text-xs font-mono text-cyan-400">
+            <span className="text-xs font-mono text-[#30D158]">
               Timescale Hypertable Window ({recentTelemetry.length} samples)
             </span>
           </div>
@@ -172,14 +172,14 @@ export const DeviceDetail: React.FC<DeviceDetailProps> = ({
           <div className="h-72 w-full">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={chartData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
-                <XAxis dataKey="time" stroke="#64748b" fontSize={10} tickLine={false} />
-                <YAxis stroke="#64748b" fontSize={10} tickLine={false} />
+                <CartesianGrid strokeDasharray="3 3" stroke="#26372E" />
+                <XAxis dataKey="time" stroke="#708A7C" fontSize={10} tickLine={false} />
+                <YAxis stroke="#708A7C" fontSize={10} tickLine={false} />
                 <Tooltip
-                  contentStyle={{ backgroundColor: '#101522', borderColor: '#334155', borderRadius: '8px', fontSize: '11px' }}
-                  itemStyle={{ color: '#f8fafc' }}
+                  contentStyle={{ backgroundColor: '#171C19', borderColor: '#2E4036', borderRadius: '12px', fontSize: '11px', color: '#F4F2EC' }}
+                  itemStyle={{ color: '#F4F2EC' }}
                 />
-                <Legend iconSize={8} wrapperStyle={{ fontSize: '11px', color: '#94a3b8' }} />
+                <Legend iconSize={8} wrapperStyle={{ fontSize: '11px', color: '#94A39B' }} />
                 {numericFields.map((field, idx) => (
                   <Line
                     key={field.name}
@@ -216,8 +216,8 @@ export const DeviceDetail: React.FC<DeviceDetailProps> = ({
       {activeTab === 'anomalies' && (
         <div className="space-y-4">
           {anomalies.length === 0 ? (
-            <div className="p-8 text-center glass-panel rounded-xl text-slate-400 text-xs">
-              <BrainCircuit className="w-8 h-8 text-slate-500 mx-auto mb-2" />
+            <div className="p-10 text-center organic-glass-card text-[#708A7C] text-xs">
+              <BrainCircuit className="w-8 h-8 text-[#2E4036] mx-auto mb-2" />
               No ML behavioral anomalies detected for this device. Normal baseline operation.
             </div>
           ) : (
@@ -229,19 +229,19 @@ export const DeviceDetail: React.FC<DeviceDetailProps> = ({
       )}
 
       {activeTab === 'security' && (
-        <div className="glass-panel rounded-2xl p-5 border border-slate-800 space-y-3">
-          <h3 className="text-sm font-bold text-white uppercase tracking-wider pb-3 border-b border-slate-800">
+        <div className="organic-glass-card p-6 space-y-4">
+          <h3 className="text-xs font-bold text-white uppercase tracking-wider pb-3 border-b border-[#26372E] font-mono">
             Security Violations & Transport Audit
           </h3>
           {securityEvents.length === 0 ? (
-            <div className="text-center py-6 text-xs text-slate-400">
+            <div className="text-center py-8 text-xs text-[#708A7C]">
               No security transport violations logged. Mutual TLS & Topic ACLs clean.
             </div>
           ) : (
             securityEvents.map(sec => (
-              <div key={sec.id} className="p-3 rounded-xl bg-[#0c101a] border border-slate-800 flex items-center justify-between text-xs">
+              <div key={sec.id} className="p-3.5 rounded-2xl bg-[#142019] border border-[#26372E] flex items-center justify-between text-xs hover-lift">
                 <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-lg bg-rose-950/40 text-rose-400">
+                  <div className="p-2.5 rounded-2xl bg-[#E30000]/15 text-[#E30000]">
                     <ShieldAlert className="w-4 h-4" />
                   </div>
                   <div>
@@ -249,10 +249,10 @@ export const DeviceDetail: React.FC<DeviceDetailProps> = ({
                       <span className="font-semibold text-white">{sec.eventType.replace(/_/g, ' ')}</span>
                       <SeverityBadge severity={sec.severity} />
                     </div>
-                    <p className="text-[11px] text-slate-400 mt-0.5">{sec.details}</p>
+                    <p className="text-[11px] text-[#94A39B] mt-0.5">{sec.details}</p>
                   </div>
                 </div>
-                <span className="text-[10px] font-mono text-slate-400">
+                <span className="text-[10px] font-mono text-[#708A7C]">
                   {new Date(sec.timestamp).toLocaleString()}
                 </span>
               </div>

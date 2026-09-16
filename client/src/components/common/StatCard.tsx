@@ -10,7 +10,7 @@ interface StatCardProps {
     value: string;
     isPositive: boolean;
   };
-  accentColor?: 'cyan' | 'emerald' | 'amber' | 'rose' | 'purple';
+  accentColor?: 'cyan' | 'emerald' | 'amber' | 'rose' | 'purple' | 'clay' | 'moss';
   onClick?: () => void;
 }
 
@@ -20,48 +20,52 @@ export const StatCard: React.FC<StatCardProps> = ({
   subtitle,
   icon: Icon,
   trend,
-  accentColor = 'cyan',
+  accentColor = 'clay',
   onClick
 }) => {
   const colorMap = {
-    cyan: 'from-cyan-500/20 to-blue-500/5 text-cyan-400 border-cyan-500/30 hover:border-cyan-500/60',
-    emerald: 'from-emerald-500/20 to-teal-500/5 text-emerald-400 border-emerald-500/30 hover:border-emerald-500/60',
-    amber: 'from-amber-500/20 to-yellow-500/5 text-amber-400 border-amber-500/30 hover:border-amber-500/60',
-    rose: 'from-rose-500/20 to-red-500/5 text-rose-400 border-rose-500/30 hover:border-rose-500/60',
-    purple: 'from-purple-500/20 to-indigo-500/5 text-purple-400 border-purple-500/30 hover:border-purple-500/60'
+    clay: 'border-[#CC5833]/30 hover:border-[#CC5833]/60 bg-[#171C19]/90',
+    moss: 'border-[#2E4036] hover:border-[#708A7C]/60 bg-[#171C19]/90',
+    cyan: 'border-[#2997FF]/30 hover:border-[#2997FF]/60 bg-[#171C19]/90',
+    emerald: 'border-[#30D158]/30 hover:border-[#30D158]/60 bg-[#171C19]/90',
+    amber: 'border-[#E85D04]/30 hover:border-[#E85D04]/60 bg-[#171C19]/90',
+    rose: 'border-[#E30000]/30 hover:border-[#E30000]/60 bg-[#171C19]/90',
+    purple: 'border-[#9D65C9]/30 hover:border-[#9D65C9]/60 bg-[#171C19]/90'
   };
 
   const iconColorMap = {
-    cyan: 'bg-cyan-500/10 text-cyan-400 border-cyan-500/30',
-    emerald: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30',
-    amber: 'bg-amber-500/10 text-amber-400 border-amber-500/30',
-    rose: 'bg-rose-500/10 text-rose-400 border-rose-500/30',
-    purple: 'bg-purple-500/10 text-purple-400 border-purple-500/30'
+    clay: 'bg-[#CC5833]/15 text-[#CC5833] border-[#CC5833]/30',
+    moss: 'bg-[#2E4036]/60 text-[#9DB3A6] border-[#708A7C]/30',
+    cyan: 'bg-[#2997FF]/15 text-[#2997FF] border-[#2997FF]/30',
+    emerald: 'bg-[#30D158]/15 text-[#30D158] border-[#30D158]/30',
+    amber: 'bg-[#E85D04]/15 text-[#E85D04] border-[#E85D04]/30',
+    rose: 'bg-[#E30000]/15 text-[#E30000] border-[#E30000]/30',
+    purple: 'bg-[#9D65C9]/15 text-[#9D65C9] border-[#9D65C9]/30'
   };
 
   return (
     <div
       onClick={onClick}
-      className={`relative overflow-hidden rounded-xl border bg-gradient-to-b bg-[#101522]/90 backdrop-blur-md p-5 transition-all duration-200 ${colorMap[accentColor]} ${onClick ? 'cursor-pointer hover:-translate-y-0.5' : ''}`}
+      className={`relative overflow-hidden rounded-[2rem] border backdrop-blur-xl p-5 transition-all duration-300 shadow-organic-card hover:shadow-organic-hover hover-lift ${colorMap[accentColor]} ${onClick ? 'cursor-pointer' : ''}`}
     >
       <div className="flex items-center justify-between">
-        <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">{title}</span>
-        <div className={`p-2.5 rounded-lg border ${iconColorMap[accentColor]}`}>
-          <Icon className="w-5 h-5" />
+        <span className="text-[11px] font-semibold uppercase tracking-wider text-[#708A7C] font-mono">{title}</span>
+        <div className={`p-2.5 rounded-2xl border ${iconColorMap[accentColor]}`}>
+          <Icon className="w-4 h-4" />
         </div>
       </div>
 
-      <div className="mt-4 flex items-baseline gap-2">
+      <div className="mt-3 flex items-baseline gap-2">
         <span className="text-2xl font-bold tracking-tight text-white font-mono">{value}</span>
         {trend && (
-          <span className={`text-xs font-semibold ${trend.isPositive ? 'text-emerald-400' : 'text-rose-400'}`}>
+          <span className={`text-[11px] font-mono font-semibold ${trend.isPositive ? 'text-[#30D158]' : 'text-[#E30000]'}`}>
             {trend.value}
           </span>
         )}
       </div>
 
       {subtitle && (
-        <p className="mt-1.5 text-xs text-slate-400 truncate">{subtitle}</p>
+        <p className="mt-1 text-xs text-[#94A39B] truncate">{subtitle}</p>
       )}
     </div>
   );

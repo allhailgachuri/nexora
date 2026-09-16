@@ -41,10 +41,10 @@ export const FleetOverview: React.FC<FleetOverviewProps> = ({
 }) => {
   // Device Lifecycle Breakdown data for Pie Chart
   const statusPieData = [
-    { name: 'Active', value: stats?.activeDevices || 0, color: '#10b981' },
-    { name: 'Suspected', value: stats?.suspectedDevices || 0, color: '#f59e0b' },
-    { name: 'Quarantined', value: stats?.quarantinedDevices || 0, color: '#ef4444' },
-    { name: 'Revoked', value: stats?.revokedDevices || 0, color: '#8b5cf6' }
+    { name: 'Active', value: stats?.activeDevices || 0, color: '#30D158' },
+    { name: 'Suspected', value: stats?.suspectedDevices || 0, color: '#E85D04' },
+    { name: 'Quarantined', value: stats?.quarantinedDevices || 0, color: '#E30000' },
+    { name: 'Revoked', value: stats?.revokedDevices || 0, color: '#9D65C9' }
   ].filter(d => d.value > 0);
 
   return (
@@ -56,7 +56,7 @@ export const FleetOverview: React.FC<FleetOverviewProps> = ({
           value={stats?.totalDevices || 0}
           subtitle="Provisioned IoT Devices"
           icon={Server}
-          accentColor="cyan"
+          accentColor="moss"
           onClick={() => onNavigateTab('devices')}
         />
         <StatCard
@@ -68,9 +68,9 @@ export const FleetOverview: React.FC<FleetOverviewProps> = ({
           onClick={() => onNavigateTab('devices')}
         />
         <StatCard
-          title="Suspected / Under Review"
+          title="Suspected Drift"
           value={stats?.suspectedDevices || 0}
-          subtitle="Behavioral Drift Detected"
+          subtitle="Behavioral Variance"
           icon={AlertTriangle}
           accentColor="amber"
           onClick={() => onNavigateTab('devices')}
@@ -84,17 +84,17 @@ export const FleetOverview: React.FC<FleetOverviewProps> = ({
           onClick={() => onNavigateTab('devices')}
         />
         <StatCard
-          title="Open Incidents"
+          title="Open Cases"
           value={stats?.openIncidents || 0}
-          subtitle="Assigned SOC Cases"
+          subtitle="Assigned SOC Incidents"
           icon={Activity}
-          accentColor="purple"
+          accentColor="clay"
           onClick={() => onNavigateTab('incidents')}
         />
         <StatCard
-          title="Certificates Expiring"
+          title="Cert Expiring"
           value={stats?.expiringCertsCount || 0}
-          subtitle="< 30 Days Left in Validity"
+          subtitle="< 30 Days in Policy"
           icon={KeyRound}
           accentColor="amber"
           onClick={() => onNavigateTab('pki')}
@@ -108,53 +108,53 @@ export const FleetOverview: React.FC<FleetOverviewProps> = ({
         </div>
 
         {/* Fleet Posture & Status Breakdown */}
-        <div className="glass-panel rounded-2xl p-5 flex flex-col justify-between border border-slate-800">
+        <div className="organic-glass-card p-6 flex flex-col justify-between">
           <div>
-            <div className="flex items-center justify-between pb-3 border-b border-slate-800">
-              <h3 className="text-sm font-bold uppercase tracking-wider text-white">Fleet Integrity Posture</h3>
-              <span className="text-xs font-mono font-bold text-emerald-400">
+            <div className="flex items-center justify-between pb-4 border-b border-[#26372E]">
+              <h3 className="text-xs font-bold uppercase tracking-wider text-white font-mono">Fleet Integrity Posture</h3>
+              <span className="text-xs font-mono font-bold text-[#30D158] bg-[#30D158]/10 px-2.5 py-1 rounded-full border border-[#30D158]/30">
                 {stats?.fleetHealthScore || 95}% Health
               </span>
             </div>
 
-            <div className="h-48 mt-2">
+            <div className="h-48 mt-3">
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                   <Pie
                     data={statusPieData}
                     cx="50%"
                     cy="50%"
-                    innerRadius={50}
-                    outerRadius={75}
+                    innerRadius={52}
+                    outerRadius={78}
                     paddingAngle={4}
                     dataKey="value"
                   >
                     {statusPieData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} stroke="#0a0d14" strokeWidth={2} />
+                      <Cell key={`cell-${index}`} fill={entry.color} stroke="#171C19" strokeWidth={3} />
                     ))}
                   </Pie>
                   <Tooltip
-                    contentStyle={{ backgroundColor: '#101522', borderColor: '#334155', borderRadius: '8px', fontSize: '12px' }}
-                    itemStyle={{ color: '#f8fafc' }}
+                    contentStyle={{ backgroundColor: '#171C19', borderColor: '#2E4036', borderRadius: '14px', fontSize: '12px', color: '#F4F2EC' }}
+                    itemStyle={{ color: '#F4F2EC' }}
                   />
                   <Legend
                     verticalAlign="bottom"
                     iconSize={8}
-                    wrapperStyle={{ fontSize: '11px', color: '#94a3b8' }}
+                    wrapperStyle={{ fontSize: '11px', color: '#94A39B' }}
                   />
                 </PieChart>
               </ResponsiveContainer>
             </div>
           </div>
 
-          <div className="pt-4 border-t border-slate-800 grid grid-cols-2 gap-3 text-center">
-            <div className="p-2.5 rounded-xl bg-[#0c101a] border border-slate-800">
-              <div className="text-[11px] text-slate-400">Mutual TLS Enforced</div>
-              <div className="text-sm font-bold text-cyan-400 font-mono mt-0.5">100% (2048-bit)</div>
+          <div className="pt-4 border-t border-[#26372E] grid grid-cols-2 gap-3 text-center">
+            <div className="p-3 rounded-2xl bg-[#142019] border border-[#26372E]">
+              <div className="text-[11px] text-[#708A7C]">Mutual TLS Enforced</div>
+              <div className="text-xs font-bold text-[#30D158] font-mono mt-0.5">100% (2048-bit)</div>
             </div>
-            <div className="p-2.5 rounded-xl bg-[#0c101a] border border-slate-800">
-              <div className="text-[11px] text-slate-400">Topic ACL Guard</div>
-              <div className="text-sm font-bold text-emerald-400 font-mono mt-0.5">STRICT</div>
+            <div className="p-3 rounded-2xl bg-[#142019] border border-[#26372E]">
+              <div className="text-[11px] text-[#708A7C]">Topic ACL Guard</div>
+              <div className="text-xs font-bold text-[#CC5833] font-mono mt-0.5">STRICT REGEX</div>
             </div>
           </div>
         </div>

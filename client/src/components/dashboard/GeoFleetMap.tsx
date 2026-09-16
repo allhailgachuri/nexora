@@ -3,27 +3,27 @@ import { MapContainer, TileLayer, Marker, Popup, Circle } from 'react-leaflet';
 import L from 'leaflet';
 import { Site } from '../../types';
 
-// Custom Map Pins for sites
+// Custom Map Pins for sites with Organic Tech styling
 const createSiteIcon = (hasAnomalies: boolean) => {
   return L.divIcon({
     className: 'custom-div-icon',
     html: `
       <div style="
-        background: ${hasAnomalies ? '#ef4444' : '#06b6d4'};
-        width: 24px;
-        height: 24px;
+        background: ${hasAnomalies ? '#CC5833' : '#30D158'};
+        width: 26px;
+        height: 26px;
         border-radius: 50%;
-        border: 3px solid #0a0d14;
-        box-shadow: 0 0 15px ${hasAnomalies ? '#ef4444' : '#06b6d4'};
+        border: 3px solid #171C19;
+        box-shadow: 0 0 16px ${hasAnomalies ? 'rgba(204, 88, 51, 0.7)' : 'rgba(48, 209, 88, 0.7)'};
         display: flex;
         align-items: center;
         justify-content: center;
       ">
-        <div style="width: 6px; height: 6px; background: white; border-radius: 50%;"></div>
+        <div style="width: 7px; height: 7px; background: white; border-radius: 50%;"></div>
       </div>
     `,
-    iconSize: [24, 24],
-    iconAnchor: [12, 12]
+    iconSize: [26, 26],
+    iconAnchor: [13, 13]
   });
 };
 
@@ -38,10 +38,10 @@ export const GeoFleetMap: React.FC<GeoFleetMapProps> = ({ sites, onSelectSite })
   const centerLon = -120.0;
 
   return (
-    <div className="relative w-full h-[400px] rounded-2xl overflow-hidden border border-slate-800 bg-[#0a0d14] shadow-xl">
-      <div className="absolute top-3 left-3 z-[1000] bg-[#101522]/90 backdrop-blur-md border border-slate-700/80 px-3 py-1.5 rounded-lg text-xs font-semibold text-white shadow-lg flex items-center gap-2">
-        <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
-        <span>Geographic Fleet Deployment Zones</span>
+    <div className="relative w-full h-[400px] rounded-[2rem] overflow-hidden border border-[#2E4036] bg-[#111614] shadow-organic-card">
+      <div className="absolute top-4 left-4 z-[1000] bg-[#171C19]/90 backdrop-blur-xl border border-[#26372E] px-4 py-2 rounded-full text-xs font-semibold text-white shadow-organic-card flex items-center gap-2.5">
+        <span className="w-2 h-2 rounded-full bg-[#30D158] animate-pulse" />
+        <span className="font-mono text-[11px]">Geographic Fleet Zones</span>
       </div>
 
       <MapContainer
@@ -67,14 +67,14 @@ export const GeoFleetMap: React.FC<GeoFleetMapProps> = ({ sites, onSelectSite })
                 }}
               >
                 <Popup className="custom-popup">
-                  <div className="p-2 bg-[#101522] text-white rounded-lg border border-slate-700 text-xs">
-                    <h4 className="font-bold text-cyan-400">{site.name}</h4>
-                    <p className="text-slate-400 text-[11px] mt-0.5">{site.locationName}</p>
-                    <div className="mt-2 grid grid-cols-2 gap-2 text-[10px] font-mono border-t border-slate-800 pt-2">
+                  <div className="p-3 bg-[#171C19] text-[#F4F2EC] rounded-2xl border border-[#2E4036] text-xs font-sans">
+                    <h4 className="font-bold text-[#F4F2EC] text-sm">{site.name}</h4>
+                    <p className="text-[#94A39B] text-[11px] mt-0.5">{site.locationName}</p>
+                    <div className="mt-3 grid grid-cols-2 gap-2 text-[10px] font-mono border-t border-[#26372E] pt-2">
                       <div>Total Nodes: <span className="text-white font-bold">{site.deviceCount || 0}</span></div>
-                      <div>Active: <span className="text-emerald-400 font-bold">{site.activeCount || 0}</span></div>
-                      <div>Suspected: <span className="text-amber-400 font-bold">{site.suspectedCount || 0}</span></div>
-                      <div>Quarantined: <span className="text-rose-400 font-bold">{site.quarantinedCount || 0}</span></div>
+                      <div>Active: <span className="text-[#30D158] font-bold">{site.activeCount || 0}</span></div>
+                      <div>Suspected: <span className="text-[#E85D04] font-bold">{site.suspectedCount || 0}</span></div>
+                      <div>Quarantined: <span className="text-[#E30000] font-bold">{site.quarantinedCount || 0}</span></div>
                     </div>
                   </div>
                 </Popup>
@@ -83,10 +83,10 @@ export const GeoFleetMap: React.FC<GeoFleetMapProps> = ({ sites, onSelectSite })
                 center={[site.latitude, site.longitude]}
                 radius={25000}
                 pathOptions={{
-                  color: hasAnomalies ? '#ef4444' : '#06b6d4',
-                  fillColor: hasAnomalies ? '#ef4444' : '#06b6d4',
-                  fillOpacity: 0.1,
-                  weight: 1
+                  color: hasAnomalies ? '#CC5833' : '#30D158',
+                  fillColor: hasAnomalies ? '#CC5833' : '#30D158',
+                  fillOpacity: 0.12,
+                  weight: 1.5
                 }}
               />
             </React.Fragment>

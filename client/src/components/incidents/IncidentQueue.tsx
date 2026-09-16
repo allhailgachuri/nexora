@@ -57,38 +57,42 @@ export const IncidentQueue: React.FC<IncidentQueueProps> = ({
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-5">
       {/* Header Bar */}
-      <div className="glass-panel rounded-2xl p-4 border border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <div className="flex items-center gap-2">
-          <AlertTriangle className="w-5 h-5 text-rose-400" />
-          <h2 className="text-base font-bold text-white uppercase tracking-wider">
-            SOC Incident Triage & Case Queue
-          </h2>
-          <span className="text-xs font-mono px-2 py-0.5 rounded bg-rose-950 text-rose-300 border border-rose-800/60">
-            {filtered.length} Active Cases
-          </span>
+      <div className="organic-glass-card p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="flex items-center gap-3">
+          <div className="p-2.5 rounded-2xl bg-[#CC5833]/15 text-[#CC5833] border border-[#CC5833]/30">
+            <AlertTriangle className="w-5 h-5" />
+          </div>
+          <div>
+            <h2 className="text-base font-bold text-white tracking-tight">
+              SOC Incident Triage & Case Queue
+            </h2>
+            <p className="text-xs text-[#94A39B]">
+              {filtered.length} Active Incidents Requiring Human/Automated Triage
+            </p>
+          </div>
         </div>
 
         <button
           onClick={() => setIsCreateOpen(true)}
-          className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-xs font-semibold border border-slate-700 transition-all"
+          className="magnetic-btn flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#142019] hover:bg-[#1E2622] text-[#F4F2EC] text-xs font-semibold border border-[#26372E] shadow-sm transition-all"
         >
-          <Plus className="w-4 h-4" />
-          <span>Manual Incident</span>
+          <Plus className="w-4 h-4 text-[#CC5833]" />
+          <span>Manual Incident Case</span>
         </button>
       </div>
 
       {/* Filter Row */}
-      <div className="glass-panel rounded-xl p-3 border border-slate-800 grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+      <div className="organic-glass p-3 rounded-[2rem] grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
         <div className="relative">
-          <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+          <Search className="w-3.5 h-3.5 text-[#708A7C] absolute left-3.5 top-1/2 -translate-y-1/2" />
           <input
             type="text"
             placeholder="Search incident title or ID..."
             value={searchTerm}
             onChange={e => setSearchTerm(e.target.value)}
-            className="w-full bg-[#0c101a] border border-slate-800 rounded-lg pl-8 pr-3 py-1.5 text-slate-200 focus:outline-none focus:border-cyan-500"
+            className="w-full bg-[#142019] border border-[#26372E] rounded-full pl-9 pr-3 py-2 text-[#F4F2EC] placeholder-[#708A7C] focus:outline-none focus:border-[#CC5833]"
           />
         </div>
 
@@ -96,7 +100,7 @@ export const IncidentQueue: React.FC<IncidentQueueProps> = ({
           <select
             value={statusFilter}
             onChange={e => setStatusFilter(e.target.value)}
-            className="w-full bg-[#0c101a] text-slate-300 border border-slate-800 rounded-lg px-3 py-1.5 focus:outline-none focus:border-cyan-500"
+            className="w-full bg-[#142019] text-[#CBD4CF] border border-[#26372E] rounded-full px-3.5 py-2 focus:outline-none focus:border-[#CC5833] cursor-pointer"
           >
             <option value="">All Triage States</option>
             <option value="OPEN">OPEN</option>
@@ -111,7 +115,7 @@ export const IncidentQueue: React.FC<IncidentQueueProps> = ({
           <select
             value={severityFilter}
             onChange={e => setSeverityFilter(e.target.value)}
-            className="w-full bg-[#0c101a] text-slate-300 border border-slate-800 rounded-lg px-3 py-1.5 focus:outline-none focus:border-cyan-500"
+            className="w-full bg-[#142019] text-[#CBD4CF] border border-[#26372E] rounded-full px-3.5 py-2 focus:outline-none focus:border-[#CC5833] cursor-pointer"
           >
             <option value="">All Severities</option>
             <option value="CRITICAL">CRITICAL</option>
@@ -123,24 +127,24 @@ export const IncidentQueue: React.FC<IncidentQueueProps> = ({
       </div>
 
       {/* Incidents Table */}
-      <div className="glass-panel rounded-2xl border border-slate-800 overflow-hidden shadow-xl">
+      <div className="organic-glass-card overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs text-slate-300">
-            <thead className="bg-[#0c101a] text-[11px] uppercase tracking-wider text-slate-400 border-b border-slate-800">
+          <table className="w-full text-left text-xs text-[#CBD4CF]">
+            <thead className="bg-[#142019] text-[10px] font-mono uppercase tracking-wider text-[#708A7C] border-b border-[#26372E]">
               <tr>
-                <th className="py-3 px-4">Case Title & ID</th>
-                <th className="py-3 px-4">Severity</th>
-                <th className="py-3 px-4">Status</th>
-                <th className="py-3 px-4">Linked Evidence</th>
-                <th className="py-3 px-4">Actions Executed</th>
-                <th className="py-3 px-4">Created</th>
-                <th className="py-3 px-4 text-right">Triage</th>
+                <th className="py-3.5 px-5">Case Title & ID</th>
+                <th className="py-3.5 px-5">Severity</th>
+                <th className="py-3.5 px-5">Status</th>
+                <th className="py-3.5 px-5">Evidence Linked</th>
+                <th className="py-3.5 px-5">Playbooks</th>
+                <th className="py-3.5 px-5">Created</th>
+                <th className="py-3.5 px-5 text-right">Triage</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-800/60 font-mono">
+            <tbody className="divide-y divide-[#26372E] font-mono">
               {filtered.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="text-center py-10 text-slate-400 font-sans">
+                  <td colSpan={7} className="text-center py-12 text-[#708A7C] font-sans">
                     No open incidents matching filter criteria.
                   </td>
                 </tr>
@@ -149,43 +153,43 @@ export const IncidentQueue: React.FC<IncidentQueueProps> = ({
                   <tr
                     key={inc.id}
                     onClick={() => onSelectIncident(inc.id)}
-                    className="hover:bg-slate-800/30 transition-colors group cursor-pointer"
+                    className="hover:bg-[#1C2B22]/60 transition-colors group cursor-pointer"
                   >
-                    <td className="py-3 px-4">
-                      <div className="font-sans font-bold text-white group-hover:text-cyan-400 transition-colors">
+                    <td className="py-3.5 px-5">
+                      <div className="font-sans font-bold text-white group-hover:text-[#CC5833] transition-colors">
                         {inc.title}
                       </div>
-                      <div className="text-[11px] text-slate-400 font-mono">{inc.id}</div>
+                      <div className="text-[11px] text-[#708A7C] font-mono">{inc.id}</div>
                     </td>
 
-                    <td className="py-3 px-4">
+                    <td className="py-3.5 px-5">
                       <SeverityBadge severity={inc.severity} />
                     </td>
 
-                    <td className="py-3 px-4">
+                    <td className="py-3.5 px-5">
                       <StatusBadge status={inc.status} />
                     </td>
 
-                    <td className="py-3 px-4 font-sans text-[11px]">
-                      <div>{inc.securityEventIds.length} Security Alerts</div>
-                      <div className="text-slate-400">{inc.anomalyEventIds.length} ML Anomalies</div>
+                    <td className="py-3.5 px-5 font-sans text-[11px]">
+                      <div className="text-white font-medium">{inc.securityEventIds.length} Security Alerts</div>
+                      <div className="text-[#708A7C]">{inc.anomalyEventIds.length} ML Anomalies</div>
                     </td>
 
-                    <td className="py-3 px-4">
-                      <span className="font-mono text-cyan-300">{inc.actions.length} Playbooks</span>
+                    <td className="py-3.5 px-5">
+                      <span className="font-mono text-[#30D158]">{inc.actions.length} Executed</span>
                     </td>
 
-                    <td className="py-3 px-4 text-slate-400 text-[11px]">
+                    <td className="py-3.5 px-5 text-[#708A7C] text-[11px]">
                       {new Date(inc.createdAt).toLocaleString()}
                     </td>
 
-                    <td className="py-3 px-4 text-right font-sans">
+                    <td className="py-3.5 px-5 text-right font-sans">
                       <button
                         onClick={() => onSelectIncident(inc.id)}
-                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-slate-800 hover:bg-cyan-950 hover:text-cyan-300 text-xs text-slate-300 font-semibold transition-all"
+                        className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#142019] hover:bg-[#1E2622] text-xs text-[#CBD4CF] hover:text-white font-semibold border border-[#26372E] transition-all"
                       >
                         <span>Investigate</span>
-                        <ChevronRight className="w-3.5 h-3.5" />
+                        <ChevronRight className="w-3.5 h-3.5 text-[#CC5833]" />
                       </button>
                     </td>
                   </tr>
@@ -206,54 +210,54 @@ export const IncidentQueue: React.FC<IncidentQueueProps> = ({
       >
         <form onSubmit={handleCreate} className="space-y-4 text-xs">
           <div>
-            <label className="block text-slate-300 font-semibold mb-1">Incident Title</label>
+            <label className="block text-[#CBD4CF] font-semibold mb-1.5">Incident Title</label>
             <input
               type="text"
               required
               placeholder="e.g. Unusual Out-of-Band Telemetry Spike on Farm Probe"
               value={title}
               onChange={e => setTitle(e.target.value)}
-              className="w-full bg-[#0c101a] border border-slate-700 rounded-lg p-2.5 text-white focus:outline-none focus:border-cyan-500"
+              className="w-full bg-[#142019] border border-[#26372E] rounded-full px-4 py-2.5 text-white focus:outline-none focus:border-[#CC5833]"
             />
           </div>
 
           <div>
-            <label className="block text-slate-300 font-semibold mb-1">Severity Level</label>
+            <label className="block text-[#CBD4CF] font-semibold mb-1.5">Severity Level</label>
             <select
               value={severity}
               onChange={e => setSeverity(e.target.value)}
-              className="w-full bg-[#0c101a] border border-slate-700 rounded-lg p-2.5 text-white focus:outline-none focus:border-cyan-500"
+              className="w-full bg-[#142019] border border-[#26372E] rounded-full px-4 py-2.5 text-white focus:outline-none focus:border-[#CC5833] cursor-pointer"
             >
-              <option value="CRITICAL">CRITICAL (Direct breach or compromised actuator)</option>
-              <option value="HIGH">HIGH (Cloned certificate or topic violation)</option>
-              <option value="MEDIUM">MEDIUM (Sensor drift or unusual cadence)</option>
-              <option value="LOW">LOW (Informational deviation)</option>
+              <option value="CRITICAL" className="bg-[#171C19]">CRITICAL (Direct breach or compromised actuator)</option>
+              <option value="HIGH" className="bg-[#171C19]">HIGH (Cloned certificate or topic violation)</option>
+              <option value="MEDIUM" className="bg-[#171C19]">MEDIUM (Sensor drift or unusual cadence)</option>
+              <option value="LOW" className="bg-[#171C19]">LOW (Informational deviation)</option>
             </select>
           </div>
 
           <div>
-            <label className="block text-slate-300 font-semibold mb-1">Description & Initial Findings</label>
+            <label className="block text-[#CBD4CF] font-semibold mb-1.5">Description & Initial Findings</label>
             <textarea
               rows={3}
               placeholder="Provide background context for the SOC analyst..."
               value={description}
               onChange={e => setDescription(e.target.value)}
-              className="w-full bg-[#0c101a] border border-slate-700 rounded-lg p-2.5 text-white focus:outline-none focus:border-cyan-500 resize-none"
+              className="w-full bg-[#142019] border border-[#26372E] rounded-2xl p-3 text-white focus:outline-none focus:border-[#CC5833] resize-none"
             />
           </div>
 
-          <div className="flex items-center justify-end gap-2 pt-3 border-t border-slate-800">
+          <div className="flex items-center justify-end gap-3 pt-3 border-t border-[#26372E]">
             <button
               type="button"
               onClick={() => setIsCreateOpen(false)}
-              className="px-4 py-2 rounded-lg bg-slate-800 text-slate-300 font-semibold"
+              className="px-5 py-2.5 rounded-full bg-[#142019] text-[#CBD4CF] hover:bg-[#1E2622] font-semibold border border-[#26372E]"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={isSubmitting}
-              className="px-4 py-2 rounded-lg bg-rose-600 hover:bg-rose-500 text-white font-semibold disabled:opacity-50"
+              className="magnetic-btn px-6 py-2.5 rounded-full bg-[#CC5833] hover:bg-[#B54926] text-white font-semibold disabled:opacity-50 shadow-clay-glow"
             >
               {isSubmitting ? 'Opening Case...' : 'Create Incident'}
             </button>

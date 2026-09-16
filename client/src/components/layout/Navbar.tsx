@@ -1,5 +1,5 @@
 import React from 'react';
-import { Shield, Radio, Bell, UserCircle, Cpu } from 'lucide-react';
+import { Shield, Radio, Bell, UserCircle, Cpu, ArrowLeft } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { FleetStats } from '../../types';
 
@@ -13,92 +13,92 @@ interface NavbarProps {
 export const Navbar: React.FC<NavbarProps> = ({ stats, wsConnected, onOpenSimulator, onGoToLanding }) => {
   const { currentUser, users, switchUser } = useAuth();
 
-  const threatColor = {
-    NOMINAL: 'bg-emerald-950/60 text-emerald-400 border-emerald-500/40',
-    ELEVATED: 'bg-blue-950/60 text-blue-400 border-blue-500/40',
-    HIGH: 'bg-amber-950/60 text-amber-400 border-amber-500/40',
-    CRITICAL: 'bg-rose-950/70 text-rose-400 border-rose-600/60 animate-pulse'
+  const threatStyle = {
+    NOMINAL: 'bg-[#2E4036]/60 text-[#30D158] border-[#708A7C]/40',
+    ELEVATED: 'bg-[#CC5833]/15 text-[#CC5833] border-[#CC5833]/40',
+    HIGH: 'bg-[#E85D04]/20 text-[#E85D04] border-[#E85D04]/40',
+    CRITICAL: 'bg-[#E30000]/25 text-[#E30000] border-[#E30000]/50 animate-pulse'
   }[stats?.threatLevel || 'NOMINAL'];
 
   return (
-    <header className="sticky top-0 z-40 h-16 border-b border-slate-800 bg-[#0a0d14]/90 backdrop-blur-xl px-4 sm:px-6 flex items-center justify-between">
-      {/* Brand & Platform Identity */}
-      <div
-        onClick={onGoToLanding}
-        className="flex items-center gap-3 cursor-pointer group"
-        title="Click to view Landing Page"
-      >
-        <div className="relative flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-slate-900 to-slate-950 border border-cyan-500/30 group-hover:border-cyan-400 shadow-cyber-glow overflow-hidden p-1 transition-all">
-          <img src="/nexora.png" alt="NEXORA Logo" className="w-full h-full object-contain" />
-          <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-emerald-400 border-2 border-[#0a0d14]" />
+    <header className="sticky top-0 z-40 px-4 sm:px-6 pt-3 pb-2">
+      <div className="rounded-[2rem] bg-[#171C19]/85 backdrop-blur-2xl border border-[#26372E] px-4 sm:px-6 h-16 flex items-center justify-between shadow-organic-card">
+        {/* Brand & Platform Identity */}
+        <div
+          onClick={onGoToLanding}
+          className="flex items-center gap-3 cursor-pointer group"
+          title="Click to view Landing Page"
+        >
+          <div className="relative flex items-center justify-center w-9 h-9 rounded-full bg-gradient-to-br from-[#2E4036] to-[#142019] border border-[#708A7C]/40 group-hover:border-[#CC5833] shadow-sm overflow-hidden p-1 transition-all">
+            <img src="/nexora.png" alt="NEXORA Logo" className="w-full h-full object-contain" />
+            <div className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-[#30D158] border-2 border-[#111614]" />
+          </div>
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="text-base font-bold tracking-tight text-white font-sans group-hover:text-[#CC5833] transition-colors">NEXORA</span>
+              <span className="text-[10px] font-semibold uppercase px-2 py-0.5 rounded-full bg-[#2E4036]/60 text-[#9DB3A6] border border-[#2E4036]">
+                Command Hub
+              </span>
+            </div>
+          </div>
         </div>
-        <div>
-          <div className="flex items-center gap-2">
-            <span className="text-lg font-black tracking-wider text-white font-mono group-hover:text-cyan-400 transition-colors">NEXORA</span>
-            <span className="text-[10px] font-semibold uppercase px-1.5 py-0.5 rounded bg-cyan-950/80 text-cyan-400 border border-cyan-700/50">
-              Fleet Defense
+
+        {/* Center Status Indicators */}
+        <div className="hidden md:flex items-center gap-4">
+          {/* Threat Level Badge */}
+          <div className={`flex items-center gap-2 px-3 py-1 rounded-full border text-xs font-semibold uppercase tracking-wider ${threatStyle}`}>
+            <span className="w-2 h-2 rounded-full bg-current animate-ping" />
+            <span>Threat Posture: {stats?.threatLevel || 'NOMINAL'}</span>
+          </div>
+
+          {/* Live MQTT WebSocket Stream */}
+          <div className="flex items-center gap-2 px-3 py-1 rounded-full border border-[#26372E] bg-[#142019] text-xs text-[#94A39B]">
+            <Radio className={`w-3.5 h-3.5 ${wsConnected ? 'text-[#30D158] animate-pulse' : 'text-[#708A7C]'}`} />
+            <span className="text-[11px] font-mono text-[#708A7C]">mTLS Bus:</span>
+            <span className={`font-semibold font-mono ${wsConnected ? 'text-[#30D158]' : 'text-[#CC5833]'}`}>
+              {wsConnected ? 'ENCRYPTED' : 'CONNECTING'}
             </span>
           </div>
-          <p className="text-[11px] text-slate-400 tracking-tight hidden sm:block">
-            IoT Security & Anomaly Observability Platform
-          </p>
-        </div>
-      </div>
-
-      {/* Center Status Indicators */}
-      <div className="hidden md:flex items-center gap-4">
-        {/* Threat Level Badge */}
-        <div className={`flex items-center gap-2 px-3 py-1 rounded-lg border text-xs font-semibold uppercase tracking-wider ${threatColor}`}>
-          <span className="w-2 h-2 rounded-full bg-current animate-ping" />
-          <span>Threat Posture: {stats?.threatLevel || 'NOMINAL'}</span>
         </div>
 
-        {/* Live MQTT WebSocket Stream */}
-        <div className="flex items-center gap-2 px-2.5 py-1 rounded-lg border border-slate-800 bg-[#101522] text-xs text-slate-300">
-          <Radio className={`w-3.5 h-3.5 ${wsConnected ? 'text-emerald-400 animate-pulse' : 'text-slate-500'}`} />
-          <span className="text-[11px] font-mono text-slate-400">Broker mTLS / Bus:</span>
-          <span className={`font-semibold ${wsConnected ? 'text-emerald-400' : 'text-rose-400'}`}>
-            {wsConnected ? 'LIVE' : 'CONNECTING'}
-          </span>
-        </div>
-      </div>
-
-      {/* Right Controls & User Role Switcher */}
-      <div className="flex items-center gap-3">
-        {/* Landing Page Button */}
-        {onGoToLanding && (
-          <button
-            onClick={onGoToLanding}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-300 bg-slate-900/80 hover:bg-slate-800 border border-slate-700/80 hover:border-cyan-500/50 transition-all"
-          >
-            <span>Landing Page</span>
-          </button>
-        )}
-
-        {/* Simulator Attack Sandbox Button */}
-        <button
-          onClick={onOpenSimulator}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-cyan-300 bg-cyan-950/50 hover:bg-cyan-900/60 border border-cyan-500/40 hover:border-cyan-400 shadow-sm transition-all"
-        >
-          <Cpu className="w-4 h-4 text-cyan-400" />
-          <span className="hidden sm:inline">Attack Sandbox</span>
-        </button>
-
-        {/* User Role Switcher */}
-        <div className="relative flex items-center gap-2 pl-2 border-l border-slate-800">
-          <UserCircle className="w-5 h-5 text-slate-400" />
-          <div className="text-left">
-            <select
-              value={currentUser.id}
-              onChange={(e) => switchUser(e.target.value)}
-              className="bg-[#101522] text-xs font-medium text-white border border-slate-700/80 rounded-md px-2 py-1 focus:outline-none focus:border-cyan-500 cursor-pointer"
+        {/* Right Controls & User Switcher */}
+        <div className="flex items-center gap-3">
+          {/* Landing Page Button */}
+          {onGoToLanding && (
+            <button
+              onClick={onGoToLanding}
+              className="magnetic-btn flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-medium text-[#94A39B] bg-[#142019] hover:bg-[#1C2B22] border border-[#26372E] hover:text-white transition-all"
             >
-              {users.map(u => (
-                <option key={u.id} value={u.id}>
-                  {u.name} ({u.role.replace('_', ' ')})
-                </option>
-              ))}
-            </select>
+              <ArrowLeft className="w-3.5 h-3.5" />
+              <span>Landing</span>
+            </button>
+          )}
+
+          {/* Simulator Attack Sandbox Button */}
+          <button
+            onClick={onOpenSimulator}
+            className="magnetic-btn flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-medium text-white bg-[#CC5833] hover:bg-[#B54926] shadow-clay-glow transition-all"
+          >
+            <Cpu className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">Attack Sandbox</span>
+          </button>
+
+          {/* User Role Switcher */}
+          <div className="relative flex items-center gap-2 pl-2 border-l border-[#26372E]">
+            <UserCircle className="w-5 h-5 text-[#708A7C]" />
+            <div className="text-left">
+              <select
+                value={currentUser.id}
+                onChange={(e) => switchUser(e.target.value)}
+                className="bg-[#142019] text-xs font-medium text-[#F4F2EC] border border-[#26372E] rounded-full px-3 py-1 focus:outline-none focus:border-[#CC5833] cursor-pointer"
+              >
+                {users.map(u => (
+                  <option key={u.id} value={u.id} className="bg-[#171C19] text-[#F4F2EC]">
+                    {u.name} ({u.role.replace('_', ' ')})
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
         </div>
       </div>

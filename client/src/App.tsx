@@ -25,6 +25,7 @@ import {
   SecurityEvent,
   AnomalyEvent
 } from './types';
+import { ArrowLeft } from 'lucide-react';
 
 const DashboardContent: React.FC = () => {
   const { currentUser } = useAuth();
@@ -188,7 +189,7 @@ const DashboardContent: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#0a0d14] text-slate-100 flex flex-col font-sans">
+    <div className="min-h-screen bg-[#111614] text-[#F4F2EC] flex flex-col font-sans selection:bg-[#CC5833]/30 selection:text-[#F4F2EC]">
       {isLandingView ? (
         <LandingPage
           onEnterApp={(tab) => {
@@ -207,7 +208,7 @@ const DashboardContent: React.FC = () => {
             onGoToLanding={() => setIsLandingView(true)}
           />
 
-          <div className="flex-1 flex flex-col md:flex-row">
+          <div className="flex-1 flex flex-col md:flex-row max-w-7xl mx-auto w-full pt-2 pb-8">
             <Sidebar
               activeTab={activeTab}
               setActiveTab={(tab) => {
@@ -219,134 +220,136 @@ const DashboardContent: React.FC = () => {
               onGoToLanding={() => setIsLandingView(true)}
             />
 
-        <main className="flex-1 p-4 sm:p-6 max-w-7xl mx-auto w-full space-y-6">
-          {/* SOC Fleet Overview */}
-          {activeTab === 'overview' && (
-            <FleetOverview
-              stats={stats}
-              sites={sites}
-              securityEvents={securityEvents}
-              anomalyEvents={anomalyEvents}
-              onSelectSite={(siteId) => {
-                setActiveTab('devices');
-              }}
-              onSelectDevice={(deviceId) => {
-                setSelectedDeviceId(deviceId);
-                setActiveTab('devices');
-              }}
-              onNavigateTab={(tab) => setActiveTab(tab)}
-            />
-          )}
-
-          {/* Device Registry or Detail */}
-          {activeTab === 'devices' && (
-            selectedDeviceId && deviceDetailData ? (
-              <div className="space-y-4">
-                <button
-                  onClick={() => setSelectedDeviceId(null)}
-                  className="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-cyan-400 text-xs font-semibold"
-                >
-                  ← Back to Device Registry Table
-                </button>
-                <DeviceDetail
-                  device={deviceDetailData.device}
-                  deviceType={deviceDetailData.deviceType}
-                  site={deviceDetailData.site}
-                  certificate={deviceDetailData.certificate}
-                  shadow={deviceDetailData.shadow}
-                  recentTelemetry={deviceDetailData.recentTelemetry || []}
-                  anomalies={deviceDetailData.anomalies || []}
-                  securityEvents={deviceDetailData.securityEvents || []}
-                  onStateChange={(st, reason) => handleDeviceStateChange(selectedDeviceId, st, reason)}
-                  onSaveDesiredShadow={handleSaveDesiredShadow}
-                  onRotateCert={handleRotateCert}
-                  onRevokeCert={handleRevokeCert}
+            <main className="flex-1 p-3 sm:p-6 w-full space-y-6">
+              {/* SOC Fleet Overview */}
+              {activeTab === 'overview' && (
+                <FleetOverview
+                  stats={stats}
+                  sites={sites}
+                  securityEvents={securityEvents}
+                  anomalyEvents={anomalyEvents}
+                  onSelectSite={(siteId) => {
+                    setActiveTab('devices');
+                  }}
+                  onSelectDevice={(deviceId) => {
+                    setSelectedDeviceId(deviceId);
+                    setActiveTab('devices');
+                  }}
+                  onNavigateTab={(tab) => setActiveTab(tab)}
                 />
-              </div>
-            ) : (
-              <DeviceList
-                devices={devices}
-                sites={sites}
-                deviceTypes={deviceTypes}
-                onSelectDevice={(id) => setSelectedDeviceId(id)}
-                onStateChange={handleDeviceStateChange}
-                onProvisionDevice={handleProvisionDevice}
-              />
-            )
-          )}
+              )}
 
-          {/* Incidents Queue or Detail */}
-          {activeTab === 'incidents' && (
-            selectedIncidentId && incidentDetailData ? (
-              <div className="space-y-4">
-                <button
-                  onClick={() => setSelectedIncidentId(null)}
-                  className="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-cyan-400 text-xs font-semibold"
-                >
-                  ← Back to Incident Case Queue
-                </button>
-                <IncidentDetail
-                  incident={incidentDetailData.incident}
-                  device={incidentDetailData.device}
-                  securityEvents={incidentDetailData.securityEvents || []}
-                  anomalyEvents={incidentDetailData.anomalyEvents || []}
-                  onExecuteAction={handleExecuteAction}
-                  onApproveAction={handleApproveAction}
-                  onAddComment={handleAddComment}
-                  onUpdateStatus={handleUpdateIncidentStatus}
+              {/* Device Registry or Detail */}
+              {activeTab === 'devices' && (
+                selectedDeviceId && deviceDetailData ? (
+                  <div className="space-y-4">
+                    <button
+                      onClick={() => setSelectedDeviceId(null)}
+                      className="magnetic-btn inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#171C19] hover:bg-[#1E2622] text-[#30D158] text-xs font-semibold border border-[#26372E] shadow-sm transition-all"
+                    >
+                      <ArrowLeft className="w-3.5 h-3.5" />
+                      <span>Back to Device Master Registry</span>
+                    </button>
+                    <DeviceDetail
+                      device={deviceDetailData.device}
+                      deviceType={deviceDetailData.deviceType}
+                      site={deviceDetailData.site}
+                      certificate={deviceDetailData.certificate}
+                      shadow={deviceDetailData.shadow}
+                      recentTelemetry={deviceDetailData.recentTelemetry || []}
+                      anomalies={deviceDetailData.anomalies || []}
+                      securityEvents={deviceDetailData.securityEvents || []}
+                      onStateChange={(st, reason) => handleDeviceStateChange(selectedDeviceId, st, reason)}
+                      onSaveDesiredShadow={handleSaveDesiredShadow}
+                      onRotateCert={handleRotateCert}
+                      onRevokeCert={handleRevokeCert}
+                    />
+                  </div>
+                ) : (
+                  <DeviceList
+                    devices={devices}
+                    sites={sites}
+                    deviceTypes={deviceTypes}
+                    onSelectDevice={(id) => setSelectedDeviceId(id)}
+                    onStateChange={handleDeviceStateChange}
+                    onProvisionDevice={handleProvisionDevice}
+                  />
+                )
+              )}
+
+              {/* Incidents Queue or Detail */}
+              {activeTab === 'incidents' && (
+                selectedIncidentId && incidentDetailData ? (
+                  <div className="space-y-4">
+                    <button
+                      onClick={() => setSelectedIncidentId(null)}
+                      className="magnetic-btn inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#171C19] hover:bg-[#1E2622] text-[#CC5833] text-xs font-semibold border border-[#26372E] shadow-sm transition-all"
+                    >
+                      <ArrowLeft className="w-3.5 h-3.5" />
+                      <span>Back to Incident Case Queue</span>
+                    </button>
+                    <IncidentDetail
+                      incident={incidentDetailData.incident}
+                      device={incidentDetailData.device}
+                      securityEvents={incidentDetailData.securityEvents || []}
+                      anomalyEvents={incidentDetailData.anomalyEvents || []}
+                      onExecuteAction={handleExecuteAction}
+                      onApproveAction={handleApproveAction}
+                      onAddComment={handleAddComment}
+                      onUpdateStatus={handleUpdateIncidentStatus}
+                    />
+                  </div>
+                ) : (
+                  <IncidentQueue
+                    incidents={incidents}
+                    sites={sites}
+                    onSelectIncident={(id) => setSelectedIncidentId(id)}
+                    onCreateIncident={async (payload) => {
+                      await ApiService.createIncident({ ...payload, actorEmail: currentUser.email });
+                      await loadGlobalData();
+                    }}
+                  />
+                )
+              )}
+
+              {/* Tier 2 ML Anomaly Explorer */}
+              {activeTab === 'ml-anomalies' && (
+                <MlAnomaliesHub
+                  onSelectDevice={(deviceId) => {
+                    setSelectedDeviceId(deviceId);
+                    setActiveTab('devices');
+                  }}
                 />
-              </div>
-            ) : (
-              <IncidentQueue
-                incidents={incidents}
-                sites={sites}
-                onSelectIncident={(id) => setSelectedIncidentId(id)}
-                onCreateIncident={async (payload) => {
-                  await ApiService.createIncident({ ...payload, actorEmail: currentUser.email });
-                  await loadGlobalData();
-                }}
-              />
-            )
-          )}
+              )}
 
-          {/* Tier 2 ML Anomaly Explorer */}
-          {activeTab === 'ml-anomalies' && (
-            <MlAnomaliesHub
-              onSelectDevice={(deviceId) => {
-                setSelectedDeviceId(deviceId);
-                setActiveTab('devices');
-              }}
-            />
-          )}
+              {/* PKI & Certificate Authority */}
+              {activeTab === 'pki' && <PkiDashboard />}
 
-          {/* PKI & Certificate Authority */}
-          {activeTab === 'pki' && <PkiDashboard />}
+              {/* Firmware & OTA Lifecycle */}
+              {activeTab === 'firmware' && <FirmwareCenter />}
 
-          {/* Firmware & OTA Lifecycle */}
-          {activeTab === 'firmware' && <FirmwareCenter />}
+              {/* Dynamic Telemetry Schemas */}
+              {activeTab === 'schemas' && <SchemaEditor />}
 
-          {/* Dynamic Telemetry Schemas */}
-          {activeTab === 'schemas' && <SchemaEditor />}
+              {/* Interactive Attack Sandbox */}
+              {activeTab === 'sandbox' && <AttackSandbox />}
 
-          {/* Interactive Attack Sandbox */}
-          {activeTab === 'sandbox' && <AttackSandbox />}
+              {/* Immutable Audit Ledger */}
+              {activeTab === 'audit' && <AuditExplorer />}
+            </main>
+          </div>
 
-          {/* Immutable Audit Ledger */}
-          {activeTab === 'audit' && <AuditExplorer />}
-        </main>
-      </div>
-
-        {/* Attack Sandbox Floating Modal */}
-        <Modal
-          isOpen={isSimulatorModalOpen}
-          onClose={() => setIsSimulatorModalOpen(false)}
-          title="Interactive Attack & Anomaly Sandbox"
-          subtitle="Simulate realistic sensor drift, credential cloning, topic spoofing, and spikes in real time"
-          maxWidth="4xl"
-        >
-          <AttackSandbox />
-        </Modal>
-      </>
+          {/* Attack Sandbox Floating Modal */}
+          <Modal
+            isOpen={isSimulatorModalOpen}
+            onClose={() => setIsSimulatorModalOpen(false)}
+            title="Interactive Attack & Anomaly Sandbox"
+            subtitle="Simulate realistic sensor drift, credential cloning, topic spoofing, and spikes in real time"
+            maxWidth="4xl"
+          >
+            <AttackSandbox />
+          </Modal>
+        </>
       )}
     </div>
   );
